@@ -19,6 +19,7 @@ import CustomerDetail from "./pages/CustomerDetail";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 import Strategy from "./pages/Strategy";
+import Financials from "./pages/Financials";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -133,6 +134,14 @@ const App = () => (
               element={
                 <AppLayout>
                   <Strategy />
+                </AppLayout>
+              }
+            />
+            <Route
+              path="/financials"
+              element={
+                <AppLayout>
+                  <Financials />
                 </AppLayout>
               }
             />
