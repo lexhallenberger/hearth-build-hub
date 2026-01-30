@@ -106,10 +106,12 @@ export type Database = {
           contract_end_date: string | null
           contract_start_date: string | null
           created_at: string
+          current_stage_id: string | null
           health_score: number | null
           health_status: Database["public"]["Enums"]["health_status"] | null
           id: string
           industry: string | null
+          journey_id: string | null
           logo_url: string | null
           mrr: number | null
           name: string
@@ -125,10 +127,12 @@ export type Database = {
           contract_end_date?: string | null
           contract_start_date?: string | null
           created_at?: string
+          current_stage_id?: string | null
           health_score?: number | null
           health_status?: Database["public"]["Enums"]["health_status"] | null
           id?: string
           industry?: string | null
+          journey_id?: string | null
           logo_url?: string | null
           mrr?: number | null
           name: string
@@ -144,10 +148,12 @@ export type Database = {
           contract_end_date?: string | null
           contract_start_date?: string | null
           created_at?: string
+          current_stage_id?: string | null
           health_score?: number | null
           health_status?: Database["public"]["Enums"]["health_status"] | null
           id?: string
           industry?: string | null
+          journey_id?: string | null
           logo_url?: string | null
           mrr?: number | null
           name?: string
@@ -158,7 +164,22 @@ export type Database = {
           tier?: Database["public"]["Enums"]["customer_tier"]
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "customers_current_stage_id_fkey"
+            columns: ["current_stage_id"]
+            isOneToOne: false
+            referencedRelation: "journey_stages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customers_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journeys"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       deal_approvals: {
         Row: {
@@ -310,12 +331,14 @@ export type Database = {
           discount_percent: number | null
           expected_close_date: string | null
           id: string
+          journey_stage_id: string | null
           name: string
           owner_id: string
           payment_terms: string | null
           products: Json | null
           status: Database["public"]["Enums"]["deal_status"]
           total_score: number | null
+          touchpoint_ids: string[] | null
           updated_at: string
         }
         Insert: {
@@ -331,12 +354,14 @@ export type Database = {
           discount_percent?: number | null
           expected_close_date?: string | null
           id?: string
+          journey_stage_id?: string | null
           name: string
           owner_id: string
           payment_terms?: string | null
           products?: Json | null
           status?: Database["public"]["Enums"]["deal_status"]
           total_score?: number | null
+          touchpoint_ids?: string[] | null
           updated_at?: string
         }
         Update: {
@@ -352,15 +377,25 @@ export type Database = {
           discount_percent?: number | null
           expected_close_date?: string | null
           id?: string
+          journey_stage_id?: string | null
           name?: string
           owner_id?: string
           payment_terms?: string | null
           products?: Json | null
           status?: Database["public"]["Enums"]["deal_status"]
           total_score?: number | null
+          touchpoint_ids?: string[] | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "deals_journey_stage_id_fkey"
+            columns: ["journey_stage_id"]
+            isOneToOne: false
+            referencedRelation: "journey_stages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       journey_metrics: {
         Row: {
@@ -980,6 +1015,44 @@ export type Database = {
           yellow_min?: number
         }
         Relationships: []
+      }
+      user_preferences: {
+        Row: {
+          created_at: string
+          dashboard_layout: Json | null
+          default_journey_id: string | null
+          id: string
+          recent_items: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dashboard_layout?: Json | null
+          default_journey_id?: string | null
+          id?: string
+          recent_items?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dashboard_layout?: Json | null
+          default_journey_id?: string | null
+          id?: string
+          recent_items?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_preferences_default_journey_id_fkey"
+            columns: ["default_journey_id"]
+            isOneToOne: false
+            referencedRelation: "journeys"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
