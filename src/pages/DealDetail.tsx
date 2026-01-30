@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Loader2, Calculator, CheckCircle, AlertCircle, Map } from 'lucide-react';
+import { ArrowLeft, Loader2, Calculator, CheckCircle, AlertCircle, Map, Sliders } from 'lucide-react';
 import { DealScoring } from '@/components/deals/DealScoring';
 import { DealScoreChart } from '@/components/deals/DealScoreChart';
 import { DealScoreRadar } from '@/components/deal-governance/DealScoreRadar';
@@ -15,6 +15,7 @@ import { AICoachPanel } from '@/components/deals/AICoachPanel';
 import { DealJourneyMapper } from '@/components/deals/DealJourneyMapper';
 import { TouchpointSuggestions } from '@/components/deals/TouchpointSuggestions';
 import { CrossJourneyPanel } from '@/components/deals/CrossJourneyPanel';
+import { WhatIfSimulator } from '@/components/deals/WhatIfSimulator';
 import { STATUS_LABELS, STATUS_COLORS, CLASSIFICATION_COLORS, CLASSIFICATION_LABELS } from '@/types/deals';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -189,6 +190,10 @@ export default function DealDetail() {
           <TabsTrigger value="scoring">
             Scoring ({scoredCount}/{totalAttributes})
           </TabsTrigger>
+          <TabsTrigger value="simulator" className="flex items-center gap-1">
+            <Sliders className="h-3.5 w-3.5" />
+            What-If
+          </TabsTrigger>
           <TabsTrigger value="journey" className="flex items-center gap-1">
             <Map className="h-3.5 w-3.5" />
             Journey
@@ -212,6 +217,60 @@ export default function DealDetail() {
                 totalScore={deal.total_score}
               />
             </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="simulator" className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <WhatIfSimulator
+              initialDiscount={deal.discount_percent || 0}
+              initialContractLength={deal.contract_length_months || 12}
+              initialDealValue={deal.deal_value}
+              initialScore={deal.total_score || 50}
+              onApplyChanges={async (changes) => {
+                await updateDeal.mutateAsync({
+                  id: deal.id,
+                  discount_percent: changes.discount,
+                  contract_length_months: changes.contractLength,
+                  deal_value: changes.dealValue,
+                });
+              }}
+            />
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Understanding Your Score</CardTitle>
+                <CardDescription>How parameters affect deal classification</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium">Discount Impact</span>
+                    <span className="text-muted-foreground">High</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Lower discounts significantly improve your score. Each 1% reduction adds ~0.8 points.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium">Contract Length Impact</span>
+                    <span className="text-muted-foreground">Medium</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Longer contracts show customer commitment. Each additional month adds ~0.5 points.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium">Deal Value Impact</span>
+                    <span className="text-muted-foreground">Low</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Higher deal values provide modest score improvements with diminishing returns.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </TabsContent>
 
