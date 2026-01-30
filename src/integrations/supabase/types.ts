@@ -751,6 +751,57 @@ export type Database = {
           },
         ]
       }
+      market_strategy: {
+        Row: {
+          allowed_payment_terms: string[] | null
+          business_unit: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          market_mode: string
+          max_contract_months: number | null
+          max_discount_percent: number | null
+          min_contract_months: number | null
+          min_deal_value: number | null
+          name: string
+          segment_thresholds: Json | null
+          updated_at: string
+        }
+        Insert: {
+          allowed_payment_terms?: string[] | null
+          business_unit?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          market_mode?: string
+          max_contract_months?: number | null
+          max_discount_percent?: number | null
+          min_contract_months?: number | null
+          min_deal_value?: number | null
+          name?: string
+          segment_thresholds?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          allowed_payment_terms?: string[] | null
+          business_unit?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          market_mode?: string
+          max_contract_months?: number | null
+          max_discount_percent?: number | null
+          min_contract_months?: number | null
+          min_deal_value?: number | null
+          name?: string
+          segment_thresholds?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       opportunities: {
         Row: {
           actual_close_date: string | null
@@ -946,9 +997,11 @@ export type Database = {
           higher_is_better: boolean | null
           id: string
           is_active: boolean | null
+          market_mode_weights: Json | null
           max_value: number | null
           min_value: number | null
           name: string
+          scoring_logic: Json | null
           updated_at: string
           weight: number
           yellow_threshold: number | null
@@ -963,9 +1016,11 @@ export type Database = {
           higher_is_better?: boolean | null
           id?: string
           is_active?: boolean | null
+          market_mode_weights?: Json | null
           max_value?: number | null
           min_value?: number | null
           name: string
+          scoring_logic?: Json | null
           updated_at?: string
           weight?: number
           yellow_threshold?: number | null
@@ -980,9 +1035,11 @@ export type Database = {
           higher_is_better?: boolean | null
           id?: string
           is_active?: boolean | null
+          market_mode_weights?: Json | null
           max_value?: number | null
           min_value?: number | null
           name?: string
+          scoring_logic?: Json | null
           updated_at?: string
           weight?: number
           yellow_threshold?: number | null

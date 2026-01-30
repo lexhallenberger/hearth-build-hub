@@ -10,6 +10,7 @@ import {
   LogOut,
   TrendingUp,
   ChevronLeft,
+  Target,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { NavLink } from '@/components/NavLink';
@@ -49,6 +50,7 @@ const mainNavItems: NavItem[] = [
 ];
 
 const adminNavItems: NavItem[] = [
+  { title: 'Strategy', url: '/strategy', icon: Target, roles: ['admin', 'executive'] },
   { title: 'Settings', url: '/settings', icon: Settings, roles: ['admin'] },
 ];
 
