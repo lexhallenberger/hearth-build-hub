@@ -62,6 +62,104 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_health_scores: {
+        Row: {
+          created_at: string
+          customer_id: string
+          id: string
+          indicators: Json | null
+          score: number
+          scored_at: string
+          scored_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          id?: string
+          indicators?: Json | null
+          score: number
+          scored_at?: string
+          scored_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          id?: string
+          indicators?: Json | null
+          score?: number
+          scored_at?: string
+          scored_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_health_scores_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customers: {
+        Row: {
+          arr: number | null
+          contract_end_date: string | null
+          contract_start_date: string | null
+          created_at: string
+          health_score: number | null
+          health_status: Database["public"]["Enums"]["health_status"] | null
+          id: string
+          industry: string | null
+          logo_url: string | null
+          mrr: number | null
+          name: string
+          notes: string | null
+          owner_id: string
+          primary_contact_email: string | null
+          primary_contact_name: string | null
+          tier: Database["public"]["Enums"]["customer_tier"]
+          updated_at: string
+        }
+        Insert: {
+          arr?: number | null
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          created_at?: string
+          health_score?: number | null
+          health_status?: Database["public"]["Enums"]["health_status"] | null
+          id?: string
+          industry?: string | null
+          logo_url?: string | null
+          mrr?: number | null
+          name: string
+          notes?: string | null
+          owner_id: string
+          primary_contact_email?: string | null
+          primary_contact_name?: string | null
+          tier?: Database["public"]["Enums"]["customer_tier"]
+          updated_at?: string
+        }
+        Update: {
+          arr?: number | null
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          created_at?: string
+          health_score?: number | null
+          health_status?: Database["public"]["Enums"]["health_status"] | null
+          id?: string
+          industry?: string | null
+          logo_url?: string | null
+          mrr?: number | null
+          name?: string
+          notes?: string | null
+          owner_id?: string
+          primary_contact_email?: string | null
+          primary_contact_name?: string | null
+          tier?: Database["public"]["Enums"]["customer_tier"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       deal_approvals: {
         Row: {
           approval_level: number
@@ -709,6 +807,69 @@ export type Database = {
         }
         Relationships: []
       }
+      renewals: {
+        Row: {
+          created_at: string
+          current_value: number | null
+          customer_id: string
+          deal_id: string | null
+          id: string
+          notes: string | null
+          owner_id: string
+          proposed_value: number | null
+          renewal_date: string
+          risk_factors: string[] | null
+          risk_level: string | null
+          status: Database["public"]["Enums"]["renewal_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_value?: number | null
+          customer_id: string
+          deal_id?: string | null
+          id?: string
+          notes?: string | null
+          owner_id: string
+          proposed_value?: number | null
+          renewal_date: string
+          risk_factors?: string[] | null
+          risk_level?: string | null
+          status?: Database["public"]["Enums"]["renewal_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_value?: number | null
+          customer_id?: string
+          deal_id?: string | null
+          id?: string
+          notes?: string | null
+          owner_id?: string
+          proposed_value?: number | null
+          renewal_date?: string
+          risk_factors?: string[] | null
+          risk_level?: string | null
+          status?: Database["public"]["Enums"]["renewal_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "renewals_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "renewals_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       scoring_attributes: {
         Row: {
           category: Database["public"]["Enums"]["scoring_category"]
@@ -883,6 +1044,7 @@ export type Database = {
     Enums: {
       app_role: "admin" | "sales_rep" | "deal_desk" | "finance" | "executive"
       approval_status: "pending" | "approved" | "rejected" | "escalated"
+      customer_tier: "enterprise" | "mid_market" | "smb" | "startup"
       deal_classification: "green" | "yellow" | "red"
       deal_status:
         | "draft"
@@ -892,6 +1054,7 @@ export type Database = {
         | "rejected"
         | "closed_won"
         | "closed_lost"
+      health_status: "healthy" | "at_risk" | "critical"
       journey_type: "customer" | "seller" | "partner" | "deal"
       lead_status:
         | "new"
@@ -906,6 +1069,12 @@ export type Database = {
         | "negotiation"
         | "closed_won"
         | "closed_lost"
+      renewal_status:
+        | "upcoming"
+        | "in_progress"
+        | "renewed"
+        | "churned"
+        | "expanded"
       scoring_category: "financial" | "strategic" | "risk" | "customer"
     }
     CompositeTypes: {
@@ -1036,6 +1205,7 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "sales_rep", "deal_desk", "finance", "executive"],
       approval_status: ["pending", "approved", "rejected", "escalated"],
+      customer_tier: ["enterprise", "mid_market", "smb", "startup"],
       deal_classification: ["green", "yellow", "red"],
       deal_status: [
         "draft",
@@ -1046,6 +1216,7 @@ export const Constants = {
         "closed_won",
         "closed_lost",
       ],
+      health_status: ["healthy", "at_risk", "critical"],
       journey_type: ["customer", "seller", "partner", "deal"],
       lead_status: [
         "new",
@@ -1061,6 +1232,13 @@ export const Constants = {
         "negotiation",
         "closed_won",
         "closed_lost",
+      ],
+      renewal_status: [
+        "upcoming",
+        "in_progress",
+        "renewed",
+        "churned",
+        "expanded",
       ],
       scoring_category: ["financial", "strategic", "risk", "customer"],
     },
