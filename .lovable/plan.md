@@ -1,284 +1,242 @@
 
+# Journey Blueprint: Premium UI Redesign
 
-# Implementation Plan: Phases 5, 6 & 7
+## Vision
 
-This plan covers the remaining phases to complete the Revenue Acceleration Platform.
-
----
-
-## Current Status
-
-| Phase | Status |
-|-------|--------|
-| Phase 1: Foundation & Authentication | ✅ Complete |
-| Phase 2: Deal Scoring & Governance | ✅ Complete |
-| Phase 3: Journey Mapping | ✅ Complete |
-| Phase 4: Pipeline Management | ✅ Complete |
-| Phase 5: Customer Success & Renewals | ✅ Complete |
-| Phase 6: Executive Analytics | ✅ Complete |
-| Phase 7: AI Enhancements | ✅ Complete |
+Transform the current basic Kanban-style journey editor into a **jaw-dropping, world-class Service Blueprint visualization** inspired by the Accenture "SaaS Leading State Blueprint" design. This will be a premium, interactive canvas that visualizes customer journeys with front-stage experiences and backstage capabilities.
 
 ---
 
-## Phase 5: Customer Success & Renewals
+## Current State vs Target State
 
-### Database Schema
+### Current Implementation
+- Simple horizontal Kanban-style cards
+- Basic stage columns with touchpoint lists
+- Minimal visual hierarchy
+- No persona/emotion tracking
+- No front-stage/backstage separation
+- No visual journey flow lines
 
-New tables to create:
-- **customers** - Core customer records with contract details
-- **customer_health_scores** - Time-series health tracking
-- **health_score_configs** - Configurable health indicators
-- **renewals** - Renewal opportunities linked to customers
-- **customer_playbook_actions** - Triggered success actions
-
-### UI Components
-
-1. **Customers Dashboard** (`src/pages/Customers.tsx`)
-   - Customer list with health indicators (green/yellow/red)
-   - At-risk customers alert panel
-   - Quick filters by health status, contract end date
-   - Search and segmentation
-
-2. **Customer Detail Page** (`src/pages/CustomerDetail.tsx`)
-   - Health score history chart (using Recharts)
-   - Contract information panel
-   - Related deals and opportunities
-   - Activity timeline
-   - Renewal status indicator
-
-3. **Health Score Components**
-   - `CustomerHealthCard.tsx` - Visual health indicator
-   - `HealthScoreHistory.tsx` - Time-series chart
-   - `HealthIndicators.tsx` - Breakdown of contributing factors
-
-4. **Renewal Management**
-   - `RenewalPipeline.tsx` - Timeline view of upcoming renewals
-   - `RenewalFormDialog.tsx` - Create/edit renewal opportunities
-   - Integration with deal scoring engine for renewal deals
-
-### Data Hooks
-- `useCustomers.ts` - CRUD operations for customers
-- `useHealthScores.ts` - Health score queries and updates
-- `useRenewals.ts` - Renewal pipeline management
+### Target Implementation
+- **Premium Canvas Experience** with zoom, pan, and minimap
+- **Service Blueprint Structure** with front-stage and backstage swim lanes
+- **Visual Journey Flow** with animated connection lines between touchpoints
+- **Persona & Emotion Tracking** showing customer sentiment at each stage
+- **Rich Touchpoint Cards** with icons, channels, pain points visualized
+- **Stage Headers** with gradient colors, metrics, and progress indicators
+- **Moments of Truth** highlighted with special golden accents
+- **Dark/Light theme** optimized designs
 
 ---
 
-## Phase 6: Executive Dashboard & Analytics
+## Design System
 
-### Database Views/Functions
-- Aggregation functions for pipeline metrics
-- Deal quality distribution queries
-- Performance comparison queries
+### Color Palette for Stages
 
-### Analytics Dashboard (`src/pages/Analytics.tsx`)
+| Stage | Color |
+|-------|-------|
+| Discover | Purple gradient (#8B5CF6 to #A78BFA) |
+| Explore | Blue gradient (#3B82F6 to #60A5FA) |
+| Decide | Cyan gradient (#06B6D4 to #22D3EE) |
+| Engage | Green gradient (#10B981 to #34D399) |
+| Renew/End | Orange gradient (#F59E0B to #FBBF24) |
 
-1. **Key Metrics Section**
-   - Rule of 40 calculator (Revenue Growth % + Profit Margin %)
-   - CAC ratio by segment cards
-   - MRR/ARR trending chart
-
-2. **Deal Quality Analytics**
-   - Score distribution pie chart
-   - Classification trend over time (line chart)
-   - Approval cycle time metrics
-   - Exception rate tracking
-
-3. **Performance Comparisons**
-   - Rep/team leaderboard table
-   - Win rate by product line
-   - Average deal size trends
-   - Pipeline velocity metrics
-
-4. **Pipeline Health**
-   - Funnel visualization
-   - Stage conversion rates
-   - Weighted vs unweighted forecast
-
-### Components
-- `MetricCard.tsx` - Reusable KPI display
-- `Rule40Calculator.tsx` - Interactive Rule of 40 widget
-- `DealDistributionChart.tsx` - Pie/donut chart
-- `PerformanceTable.tsx` - Sortable leaderboard
-- `PipelineFunnel.tsx` - Visual funnel component
+### Visual Elements
+- **Frosted glass effects** for cards (backdrop-blur)
+- **Subtle gradients** for stage backgrounds
+- **Animated flow lines** using SVG paths
+- **Emoji-based emotion indicators** for sentiment tracking
+- **Lucide icons** for touchpoint types and channels
+- **Micro-animations** on hover and interactions
 
 ---
 
-## Phase 7: AI Enhancements
+## Implementation Plan
 
-### Edge Function: AI Deal Coach
+### Phase 1: Database Enhancement
 
-Create a backend function that analyzes deals and provides recommendations.
-
-**Endpoint**: `supabase/functions/ai-deal-coach/index.ts`
-
-**Capabilities**:
-- Score improvement suggestions based on deal attributes
-- Similar winning deal recommendations
-- Risk factor identification
-- Natural language deal summaries
-
-### UI Integration
-
-1. **AI Coach Panel** (`src/components/deals/AICoachPanel.tsx`)
-   - Integrated into Deal Detail page
-   - "Get AI Suggestions" button
-   - Displays actionable recommendations
-   - Shows similar successful deals
-
-2. **AI Insights Widget** (`src/components/ai/AIInsightsWidget.tsx`)
-   - Dashboard integration
-   - Quick pipeline insights
-   - Trend explanations
-
-3. **Natural Language Query** (`src/components/ai/AskAI.tsx`)
-   - Simple input for asking questions
-   - "How many deals are at risk?"
-   - "What's my pipeline value?"
-
-### Technical Implementation
-- Uses Lovable AI (gemini-2.5-flash for fast responses)
-- Edge function handles prompts and context building
-- Client-side streaming for real-time response display
-
----
-
-## Implementation Order
-
-### Step 1: Phase 5 Database
-Create customers, health scores, and renewals tables with RLS policies.
-
-### Step 2: Phase 5 UI
-Build customer management interface and health tracking.
-
-### Step 3: Phase 6 Analytics
-Implement executive dashboard with charts and metrics.
-
-### Step 4: Phase 7 AI
-Deploy edge function and integrate AI coach into deal workflow.
-
----
-
-## Technical Details
-
-### New Database Tables
+Add new fields to support the enhanced visualization:
 
 ```text
-customers
-├── id (uuid, PK)
-├── name (text)
-├── industry (text)
-├── tier (customer_tier enum)
-├── contract_start_date (date)
-├── contract_end_date (date)
-├── mrr (numeric)
-├── arr (numeric)
-├── health_score (numeric)
-├── health_status (health_status enum)
-├── owner_id (uuid, FK → auth.users)
-└── created_at, updated_at (timestamps)
+journey_stages table additions:
+- emotion_start (integer 1-5) - Customer emotion entering stage
+- emotion_end (integer 1-5) - Customer emotion exiting stage
+- persona (text) - Target persona for this stage
+- stage_color (text) - Custom hex color
 
-customer_health_scores
-├── id (uuid, PK)
-├── customer_id (uuid, FK → customers)
-├── score (numeric)
-├── indicators (jsonb)
-├── scored_at (timestamp)
-└── created_at (timestamp)
-
-renewals
-├── id (uuid, PK)
-├── customer_id (uuid, FK → customers)
-├── deal_id (uuid, FK → deals, nullable)
-├── status (renewal_status enum)
-├── renewal_date (date)
-├── current_value (numeric)
-├── proposed_value (numeric)
-├── risk_level (text)
-├── owner_id (uuid, FK → auth.users)
-└── created_at, updated_at (timestamps)
+journey_touchpoints table additions:
+- lane (text: 'front' | 'back') - Front-stage or backstage
+- emotion (integer 1-5) - Customer emotion at touchpoint
+- systems (text[]) - Supporting systems/tools
+- kpis (text[]) - Key metrics for this touchpoint
+- position_x (integer) - X position on canvas
+- position_y (integer) - Y position on canvas
 ```
 
-### New Type Definitions
+### Phase 2: New Component Architecture
 
 ```text
-src/types/customers.ts
-├── Customer
-├── CustomerHealthScore
-├── Renewal
-├── CustomerTier (enum)
-├── HealthStatus (enum)
-└── RenewalStatus (enum)
+src/components/journeys/
+├── JourneyCanvas.tsx           # Main canvas with zoom/pan
+├── JourneyMinimap.tsx          # Navigation minimap
+├── JourneyToolbar.tsx          # Zoom controls, view toggles
+├── StageColumn.tsx             # Enhanced stage column
+├── StageHeader.tsx             # Gradient header with metrics
+├── SwimLane.tsx                # Front-stage/Backstage lanes
+├── TouchpointNode.tsx          # Rich touchpoint visualization
+├── ConnectionLine.tsx          # Animated SVG flow lines
+├── EmotionIndicator.tsx        # Emoji-based emotion display
+├── PersonaAvatar.tsx           # Persona visualization
+├── JourneyMetricsBar.tsx       # Top metrics summary
+├── JourneyLegend.tsx           # Visual legend
+└── dialogs/
+    ├── StageFormDialog.tsx     # Enhanced stage editing
+    └── TouchpointFormDialog.tsx # Enhanced touchpoint editing
 ```
 
-### New Hooks
+### Phase 3: UI Implementation Details
 
-```text
-src/hooks/useCustomers.ts
-├── useCustomers()
-├── useCustomer(id)
-├── useCreateCustomer()
-├── useUpdateCustomer()
-└── useDeleteCustomer()
+#### 3.1 Journey Canvas (`JourneyCanvas.tsx`)
+- **Infinite canvas** with pan (drag) and zoom (scroll/pinch)
+- **Grid background** with subtle dot pattern
+- **Keyboard shortcuts** (Cmd+0 to reset, +/- to zoom)
+- **Fit-to-screen** button to auto-center content
 
-src/hooks/useRenewals.ts
-├── useRenewals()
-├── useCustomerRenewals(customerId)
-├── useCreateRenewal()
-└── useUpdateRenewal()
+#### 3.2 Stage Columns
+- **Gradient headers** with stage name, icon, and progress
+- **Metrics badges** showing conversion rate and time targets
+- **Emotion arc** showing sentiment change through stage
+- **Collapsible** front-stage and backstage sections
 
-src/hooks/useAnalytics.ts
-├── usePipelineMetrics()
-├── useDealDistribution()
-├── usePerformanceData()
-└── useRule40Data()
-```
+#### 3.3 Touchpoint Nodes
+- **Card style** with frosted glass effect
+- **Type icon** (action, decision, communication, milestone)
+- **Channel badge** with appropriate icon
+- **Pain point indicator** (red intensity based on level)
+- **Moment of Truth** golden star highlight
+- **Owner avatar** placeholder
+- **Connection handles** for drawing flows
 
-### AI Edge Function Structure
+#### 3.4 Connection Lines
+- **SVG paths** with bezier curves
+- **Animated dash pattern** showing flow direction
+- **Click to select** and show path details
+- **Gradient colors** matching connected stages
 
-```text
-supabase/functions/ai-deal-coach/
-├── index.ts (main handler)
-└── _shared/
-    └── prompts.ts (system prompts)
-```
+#### 3.5 Swim Lanes
+- **Front-Stage Lane**: Customer-facing touchpoints
+  - Persona indicators
+  - Emotion tracking
+  - Customer actions
+  
+- **Line of Visibility**: Dashed separator
+
+- **Backstage Lane**: Internal capabilities
+  - Supporting systems
+  - Team responsibilities
+  - KPIs and metrics
+
+#### 3.6 Journey Metrics Bar
+- **Total touchpoints** count
+- **Average pain score** indicator
+- **Moments of truth** count
+- **Estimated journey time** calculation
+- **Overall conversion** funnel
+
+### Phase 4: Enhanced Dialogs
+
+#### Stage Form Dialog Enhancements
+- **Color picker** with preset stage colors
+- **Persona selector** with common personas
+- **Emotion range** selector (start to end)
+- **Icon picker** for stage representation
+
+#### Touchpoint Form Dialog Enhancements
+- **Lane selector** (front-stage/backstage)
+- **Systems multi-select** dropdown
+- **KPIs input** with tag-style entry
+- **Emotion slider** with emoji preview
+- **Visual preview** of the touchpoint card
+
+### Phase 5: Animations & Polish
+
+- **Staggered entrance animations** when journey loads
+- **Smooth zoom/pan** with spring physics
+- **Hover effects** on all interactive elements
+- **Pulse animation** on moments of truth
+- **Path drawing animation** for connection lines
+- **Skeleton loading** states
 
 ---
 
 ## File Changes Summary
 
-### New Files (15+)
-- Database migration for Phase 5 tables
-- `src/types/customers.ts`
-- `src/hooks/useCustomers.ts`
-- `src/hooks/useRenewals.ts`
-- `src/hooks/useAnalytics.ts`
-- `src/pages/CustomerDetail.tsx`
-- `src/components/customers/CustomerHealthCard.tsx`
-- `src/components/customers/HealthScoreHistory.tsx`
-- `src/components/customers/RenewalPipeline.tsx`
-- `src/components/analytics/MetricCard.tsx`
-- `src/components/analytics/DealDistributionChart.tsx`
-- `src/components/analytics/PerformanceTable.tsx`
-- `src/components/deals/AICoachPanel.tsx`
-- `supabase/functions/ai-deal-coach/index.ts`
+### New Files (15)
 
-### Modified Files
-- `src/pages/Customers.tsx` - Full implementation
-- `src/pages/Analytics.tsx` - Full implementation
-- `src/pages/DealDetail.tsx` - Add AI coach panel
-- `src/pages/Dashboard.tsx` - Add AI insights widget
-- `src/App.tsx` - Add CustomerDetail route
+| File | Purpose |
+|------|---------|
+| `src/components/journeys/JourneyCanvas.tsx` | Main interactive canvas |
+| `src/components/journeys/JourneyToolbar.tsx` | Zoom, pan, view controls |
+| `src/components/journeys/JourneyMinimap.tsx` | Navigation minimap |
+| `src/components/journeys/StageColumn.tsx` | Stage visualization |
+| `src/components/journeys/StageHeader.tsx` | Gradient stage header |
+| `src/components/journeys/SwimLane.tsx` | Front/back swim lanes |
+| `src/components/journeys/TouchpointNode.tsx` | Rich touchpoint card |
+| `src/components/journeys/ConnectionLine.tsx` | SVG flow connector |
+| `src/components/journeys/EmotionIndicator.tsx` | Emoji emotion display |
+| `src/components/journeys/PersonaAvatar.tsx` | Persona visualization |
+| `src/components/journeys/JourneyMetricsBar.tsx` | Journey stats |
+| `src/components/journeys/JourneyLegend.tsx` | Visual key/legend |
+| `src/components/journeys/dialogs/StageFormDialog.tsx` | Enhanced stage form |
+| `src/components/journeys/dialogs/TouchpointFormDialog.tsx` | Enhanced touchpoint form |
+| `src/hooks/useJourneyCanvas.ts` | Canvas state management |
+
+### Modified Files (5)
+
+| File | Changes |
+|------|---------|
+| `src/pages/JourneyDetail.tsx` | Complete redesign using new components |
+| `src/pages/Journeys.tsx` | Enhanced dashboard with preview cards |
+| `src/types/journeys.ts` | Add new field types |
+| `src/hooks/useJourneys.ts` | Support new fields |
+| `src/index.css` | Add journey-specific animations |
+
+### Database Migration
+
+New migration to add enhanced fields to journey tables.
+
+---
+
+## Technical Considerations
+
+### Performance
+- **Virtualization** for large journeys (many stages/touchpoints)
+- **Canvas rendering** optimized with requestAnimationFrame
+- **Debounced updates** when dragging/editing
+- **Lazy loading** of detailed touchpoint data
+
+### Accessibility
+- **Keyboard navigation** between touchpoints
+- **Screen reader** support with ARIA labels
+- **High contrast** mode support
+- **Reduced motion** preference respect
+
+### Responsive Design
+- **Desktop**: Full canvas experience
+- **Tablet**: Simplified canvas, larger touch targets
+- **Mobile**: Vertical list view fallback with swipe navigation
 
 ---
 
 ## Expected Outcome
 
-After implementation, the platform will include:
+The redesigned Journey Blueprint will feature:
 
-1. **Customer 360 View** - Complete customer lifecycle visibility
-2. **Proactive Health Monitoring** - At-risk customer alerts
-3. **Renewal Pipeline** - Upcoming renewals with risk indicators
-4. **Executive Metrics** - Rule of 40, CAC ratios, performance benchmarks
-5. **AI-Powered Insights** - Deal improvement suggestions and natural language queries
-6. **Complete Revenue Lifecycle** - Marketing → Sales → Deals → Customer Success → Renewals
+1. **Visual Impact**: Premium, modern design that rivals enterprise SaaS tools
+2. **Service Blueprint Model**: Industry-standard front-stage/backstage visualization
+3. **Interactive Canvas**: Smooth zoom, pan, and drag interactions
+4. **Rich Data Visualization**: Emotions, pain points, and metrics displayed visually
+5. **Flow Visualization**: Animated connection lines showing the journey path
+6. **Professional Polish**: Micro-animations, gradients, and frosted glass effects
 
+This will transform the journey module from a basic list into a **premium visualization tool** that looks like it belongs in an enterprise Accenture consulting engagement.
