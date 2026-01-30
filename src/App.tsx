@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AppLayout } from "@/components/layout/AppLayout";
 import Auth from "./pages/Auth";
-import Dashboard from "./pages/Dashboard";
+import CommandCenter from "./pages/CommandCenter";
 import Deals from "./pages/Deals";
 import DealNew from "./pages/DealNew";
 import DealDetail from "./pages/DealDetail";
@@ -34,7 +34,7 @@ const App = () => (
               path="/"
               element={
                 <AppLayout>
-                  <Dashboard />
+                  <CommandCenter />
                 </AppLayout>
               }
             />
