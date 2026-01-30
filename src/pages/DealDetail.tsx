@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Loader2, Calculator, CheckCircle, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Loader2, Calculator, CheckCircle, AlertCircle, Map } from 'lucide-react';
 import { DealScoring } from '@/components/deals/DealScoring';
 import { DealScoreChart } from '@/components/deals/DealScoreChart';
 import { DealScoreRadar } from '@/components/deal-governance/DealScoreRadar';
@@ -12,11 +12,16 @@ import { DealInfo } from '@/components/deals/DealInfo';
 import { DealActivity } from '@/components/deals/DealActivity';
 import { DealApprovalPanel } from '@/components/deals/DealApprovalPanel';
 import { AICoachPanel } from '@/components/deals/AICoachPanel';
+import { DealJourneyMapper } from '@/components/deals/DealJourneyMapper';
+import { TouchpointSuggestions } from '@/components/deals/TouchpointSuggestions';
+import { CrossJourneyPanel } from '@/components/deals/CrossJourneyPanel';
 import { STATUS_LABELS, STATUS_COLORS, CLASSIFICATION_COLORS, CLASSIFICATION_LABELS } from '@/types/deals';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function DealDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data: deal, isLoading: dealLoading } = useDeal(id);
   const { data: scores, isLoading: scoresLoading } = useDealScores(id);
   const { data: notes } = useDealNotes(id);
@@ -55,6 +60,10 @@ export default function DealDetail() {
     });
   };
 
+  const handleJourneyUpdate = () => {
+    queryClient.invalidateQueries({ queryKey: ['deals', id] });
+  };
+
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -67,6 +76,12 @@ export default function DealDetail() {
   const scoredCount = scores?.length || 0;
   const totalAttributes = attributes?.length || 0;
   const scoringComplete = scoredCount === totalAttributes && totalAttributes > 0;
+
+  // Get journey data from deal (using type assertion for new fields)
+  const dealWithJourney = deal as typeof deal & { 
+    journey_stage_id?: string | null; 
+    touchpoint_ids?: string[];
+  };
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -174,6 +189,10 @@ export default function DealDetail() {
           <TabsTrigger value="scoring">
             Scoring ({scoredCount}/{totalAttributes})
           </TabsTrigger>
+          <TabsTrigger value="journey" className="flex items-center gap-1">
+            <Map className="h-3.5 w-3.5" />
+            Journey
+          </TabsTrigger>
           <TabsTrigger value="ai-coach">AI Coach</TabsTrigger>
           <TabsTrigger value="approval">Approval</TabsTrigger>
           <TabsTrigger value="details">Details</TabsTrigger>
@@ -191,6 +210,30 @@ export default function DealDetail() {
                 attributes={attributes || []} 
                 dealClassification={deal.classification}
                 totalScore={deal.total_score}
+              />
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="journey" className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-3">
+            <div className="lg:col-span-2 space-y-6">
+              <DealJourneyMapper 
+                dealId={deal.id}
+                currentStageId={dealWithJourney.journey_stage_id || null}
+                touchpointIds={dealWithJourney.touchpoint_ids || []}
+                onUpdate={handleJourneyUpdate}
+              />
+              <TouchpointSuggestions
+                dealId={deal.id}
+                currentStageId={dealWithJourney.journey_stage_id || null}
+                completedTouchpointIds={dealWithJourney.touchpoint_ids || []}
+              />
+            </div>
+            <div>
+              <CrossJourneyPanel
+                dealId={deal.id}
+                customerName={deal.customer_name}
               />
             </div>
           </div>
