@@ -1,11 +1,27 @@
+import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useScoringAttributes, useScoringThresholds } from '@/hooks/useDeals';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Settings as SettingsIcon, User, Shield, Bell } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Settings as SettingsIcon, User, Shield, Bell, Loader2, Sliders } from 'lucide-react';
 import { ROLE_LABELS, ROLE_COLORS } from '@/types/auth';
+import { CATEGORY_LABELS, CATEGORY_COLORS } from '@/types/deals';
 
 export default function Settings() {
   const { user, hasRole } = useAuth();
+  const { data: attributes, isLoading: attributesLoading } = useScoringAttributes();
+  const { data: thresholds, isLoading: thresholdsLoading } = useScoringThresholds();
 
   if (!hasRole('admin')) {
     return (
@@ -66,20 +82,112 @@ export default function Settings() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <SettingsIcon className="h-5 w-5" />
-              Scoring Configuration
+              <Sliders className="h-5 w-5" />
+              Scoring Thresholds
             </CardTitle>
-            <CardDescription>Configure deal scoring attributes and weights</CardDescription>
+            <CardDescription>Configure deal classification thresholds</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col items-center justify-center h-32 bg-muted/30 rounded-lg border-2 border-dashed border-muted">
-              <p className="text-sm text-muted-foreground text-center">
-                Scoring engine configuration coming in Phase 2
-              </p>
-            </div>
+            {thresholdsLoading ? (
+              <div className="flex items-center justify-center h-32">
+                <Loader2 className="h-6 w-6 animate-spin text-accent" />
+              </div>
+            ) : thresholds ? (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 rounded-lg bg-success/10 border border-success/20">
+                    <Label className="text-success">Green Minimum</Label>
+                    <p className="text-2xl font-bold">{thresholds.green_min}</p>
+                    <p className="text-xs text-muted-foreground">Score ≥ {thresholds.green_min}</p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-warning/10 border border-warning/20">
+                    <Label className="text-warning">Yellow Minimum</Label>
+                    <p className="text-2xl font-bold">{thresholds.yellow_min}</p>
+                    <p className="text-xs text-muted-foreground">Score ≥ {thresholds.yellow_min}</p>
+                  </div>
+                </div>
+                <div className="p-3 bg-muted/50 rounded-lg">
+                  <p className="text-sm">
+                    <span className="font-medium">Auto-approve green deals:</span>{' '}
+                    {thresholds.auto_approve_green ? 'Enabled' : 'Disabled'}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">No thresholds configured</p>
+            )}
           </CardContent>
         </Card>
+      </div>
 
+      {/* Scoring Attributes */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <SettingsIcon className="h-5 w-5" />
+            Scoring Attributes
+          </CardTitle>
+          <CardDescription>
+            Configure the attributes used to calculate deal scores
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {attributesLoading ? (
+            <div className="flex items-center justify-center h-32">
+              <Loader2 className="h-6 w-6 animate-spin text-accent" />
+            </div>
+          ) : attributes && attributes.length > 0 ? (
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Attribute</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Weight</TableHead>
+                    <TableHead>Range</TableHead>
+                    <TableHead>Direction</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {attributes.map((attr) => (
+                    <TableRow key={attr.id}>
+                      <TableCell>
+                        <div>
+                          <p className="font-medium">{attr.name}</p>
+                          {attr.description && (
+                            <p className="text-xs text-muted-foreground">{attr.description}</p>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className={CATEGORY_COLORS[attr.category]}
+                        >
+                          {CATEGORY_LABELS[attr.category]}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <span className="font-medium">{attr.weight}%</span>
+                      </TableCell>
+                      <TableCell>
+                        {attr.min_value} - {attr.max_value}
+                      </TableCell>
+                      <TableCell>
+                        {attr.higher_is_better ? '↑ Higher is better' : '↓ Lower is better'}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">No scoring attributes configured</p>
+          )}
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
