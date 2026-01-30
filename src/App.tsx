@@ -8,6 +8,8 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Deals from "./pages/Deals";
+import DealNew from "./pages/DealNew";
+import DealDetail from "./pages/DealDetail";
 import Journeys from "./pages/Journeys";
 import Pipeline from "./pages/Pipeline";
 import Customers from "./pages/Customers";
@@ -39,6 +41,22 @@ const App = () => (
               element={
                 <AppLayout>
                   <Deals />
+                </AppLayout>
+              }
+            />
+            <Route
+              path="/deals/new"
+              element={
+                <AppLayout>
+                  <DealNew />
+                </AppLayout>
+              }
+            />
+            <Route
+              path="/deals/:id"
+              element={
+                <AppLayout>
+                  <DealDetail />
                 </AppLayout>
               }
             />
