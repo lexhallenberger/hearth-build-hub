@@ -171,14 +171,14 @@ export function StageFormDialog({
           <div className="space-y-2">
             <Label>Target Persona</Label>
             <Select
-              value={form.persona}
-              onValueChange={(v) => setForm({ ...form, persona: v })}
+              value={form.persona || "none"}
+              onValueChange={(v) => setForm({ ...form, persona: v === "none" ? "" : v })}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select persona" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
+                <SelectItem value="none">None</SelectItem>
                 {PERSONA_OPTIONS.map((persona) => (
                   <SelectItem key={persona} value={persona}>
                     {persona}
