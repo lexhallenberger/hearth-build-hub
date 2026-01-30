@@ -421,10 +421,14 @@ export type Database = {
           color: string | null
           created_at: string
           description: string | null
+          emotion_end: number | null
+          emotion_start: number | null
           icon: string | null
           id: string
           journey_id: string
           name: string
+          persona: string | null
+          stage_color: string | null
           stage_order: number
           target_conversion_rate: number | null
           target_time_days: number | null
@@ -434,10 +438,14 @@ export type Database = {
           color?: string | null
           created_at?: string
           description?: string | null
+          emotion_end?: number | null
+          emotion_start?: number | null
           icon?: string | null
           id?: string
           journey_id: string
           name: string
+          persona?: string | null
+          stage_color?: string | null
           stage_order?: number
           target_conversion_rate?: number | null
           target_time_days?: number | null
@@ -447,10 +455,14 @@ export type Database = {
           color?: string | null
           created_at?: string
           description?: string | null
+          emotion_end?: number | null
+          emotion_start?: number | null
           icon?: string | null
           id?: string
           journey_id?: string
           name?: string
+          persona?: string | null
+          stage_color?: string | null
           stage_order?: number
           target_conversion_rate?: number | null
           target_time_days?: number | null
@@ -471,12 +483,18 @@ export type Database = {
           channel: string | null
           created_at: string
           description: string | null
+          emotion: number | null
           id: string
           is_moment_of_truth: boolean | null
+          kpis: string[] | null
+          lane: string | null
           name: string
           owner_role: string | null
           pain_point_level: number | null
+          position_x: number | null
+          position_y: number | null
           stage_id: string
+          systems: string[] | null
           touchpoint_order: number
           touchpoint_type: string
           updated_at: string
@@ -486,12 +504,18 @@ export type Database = {
           channel?: string | null
           created_at?: string
           description?: string | null
+          emotion?: number | null
           id?: string
           is_moment_of_truth?: boolean | null
+          kpis?: string[] | null
+          lane?: string | null
           name: string
           owner_role?: string | null
           pain_point_level?: number | null
+          position_x?: number | null
+          position_y?: number | null
           stage_id: string
+          systems?: string[] | null
           touchpoint_order?: number
           touchpoint_type?: string
           updated_at?: string
@@ -501,12 +525,18 @@ export type Database = {
           channel?: string | null
           created_at?: string
           description?: string | null
+          emotion?: number | null
           id?: string
           is_moment_of_truth?: boolean | null
+          kpis?: string[] | null
+          lane?: string | null
           name?: string
           owner_role?: string | null
           pain_point_level?: number | null
+          position_x?: number | null
+          position_y?: number | null
           stage_id?: string
+          systems?: string[] | null
           touchpoint_order?: number
           touchpoint_type?: string
           updated_at?: string
