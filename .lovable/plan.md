@@ -1,190 +1,284 @@
 
 
-# Revenue Acceleration Platform - Implementation Plan
+# Implementation Plan: Phases 5, 6 & 7
 
-## Vision
-A comprehensive, AI-enhanced platform that helps companies **sell more, faster, and better** by tracking value messaging from marketing through renewals, enabling better decisions across the entire revenue lifecycle.
-
----
-
-## Phase 1: Foundation & Authentication (Week 1)
-**Build the core infrastructure and user management**
-
-### Features:
-- **User Authentication System** with Supabase
-  - Email/password login and signup
-  - Role-based access control (Admin, Sales Rep, Deal Desk, Finance, Executive)
-  - User profiles with team assignments
-
-- **Modern Navigation Shell**
-  - Responsive sidebar with collapsible navigation
-  - Role-aware menu items (users only see what they can access)
-  - Clean, modern SaaS aesthetic with dark/light mode
-
-- **Dashboard Home**
-  - Personalized welcome based on user role
-  - Quick action cards for common tasks
-  - Activity feed placeholder
+This plan covers the remaining phases to complete the Revenue Acceleration Platform.
 
 ---
 
-## Phase 2: Deal Scoring & Governance Engine (Weeks 2-3)
-**The core deal management functionality from your presentation**
+## Current Status
 
-### Features:
-- **Deal Creation & Management**
-  - Create new deals with key attributes (size, customer, products, discount %, payment terms)
-  - Deal status tracking through lifecycle stages
-  - Attach notes, documents, and activity history
-
-- **Configurable Scoring Engine**
-  - Admin interface to define scoring attributes and weights
-  - Support for attribute categories: Financial, Strategic, Risk, Customer
-  - Green/Yellow/Red deal classification with configurable thresholds
-
-- **Real-Time Deal Scoring**
-  - Live score calculation as deal details are entered
-  - Visual radar chart showing component scores
-  - Score breakdown with recommendations for improvement
-
-- **Approval Workflows**
-  - Auto-approve "green" deals within guardrails
-  - Route yellow/red deals to appropriate approvers
-  - Escalation paths based on deal size and risk
+| Phase | Status |
+|-------|--------|
+| Phase 1: Foundation & Authentication | Complete |
+| Phase 2: Deal Scoring & Governance | Complete |
+| Phase 3: Journey Mapping | Complete |
+| Phase 4: Pipeline Management | Complete |
+| **Phase 5: Customer Success & Renewals** | **Pending** |
+| **Phase 6: Executive Analytics** | **Pending** |
+| **Phase 7: AI Enhancements** | **Pending** |
 
 ---
 
-## Phase 3: Journey Mapping & Visualization (Week 4)
-**Visualize customer, seller, partner, and deal journeys**
+## Phase 5: Customer Success & Renewals
 
-### Features:
-- **Interactive Journey Builder**
-  - Visual canvas for mapping journey stages
-  - Drag-and-drop touchpoint creation
-  - Connect journeys to show handoffs
+### Database Schema
 
-- **Four Journey Types:**
-  - Customer Journey - touchpoints and moments that matter
-  - Seller Journey - sales process stages and activities
-  - Partner Journey - channel partner engagement steps
-  - Deal Journey - transaction lifecycle from conception to close
+New tables to create:
+- **customers** - Core customer records with contract details
+- **customer_health_scores** - Time-series health tracking
+- **health_score_configs** - Configurable health indicators
+- **renewals** - Renewal opportunities linked to customers
+- **customer_playbook_actions** - Triggered success actions
 
-- **Journey Analytics**
-  - Identify friction points and bottlenecks
-  - Track conversion rates between stages
-  - Time-in-stage metrics
+### UI Components
 
----
+1. **Customers Dashboard** (`src/pages/Customers.tsx`)
+   - Customer list with health indicators (green/yellow/red)
+   - At-risk customers alert panel
+   - Quick filters by health status, contract end date
+   - Search and segmentation
 
-## Phase 4: Marketing → Sales Pipeline (Week 5)
-**Value messaging and lead progression tracking**
+2. **Customer Detail Page** (`src/pages/CustomerDetail.tsx`)
+   - Health score history chart (using Recharts)
+   - Contract information panel
+   - Related deals and opportunities
+   - Activity timeline
+   - Renewal status indicator
 
-### Features:
-- **Lead & Opportunity Management**
-  - Lead capture and qualification tracking
-  - Value proposition alignment scoring
-  - Campaign attribution and source tracking
+3. **Health Score Components**
+   - `CustomerHealthCard.tsx` - Visual health indicator
+   - `HealthScoreHistory.tsx` - Time-series chart
+   - `HealthIndicators.tsx` - Breakdown of contributing factors
 
-- **Value Messaging Library**
-  - Centralized repository of value propositions
-  - Usage tracking across deals and campaigns
-  - A/B testing insights on message effectiveness
+4. **Renewal Management**
+   - `RenewalPipeline.tsx` - Timeline view of upcoming renewals
+   - `RenewalFormDialog.tsx` - Create/edit renewal opportunities
+   - Integration with deal scoring engine for renewal deals
 
-- **Pipeline Visualization**
-  - Funnel view with conversion metrics
-  - Stage-by-stage value messaging alignment
-  - Forecast projections based on pipeline health
-
----
-
-## Phase 5: Customer Success & Renewals (Week 6)
-**Post-sale lifecycle management**
-
-### Features:
-- **Customer Health Scoring**
-  - Configurable health indicators (usage, engagement, support tickets)
-  - AI-powered churn risk prediction
-  - Automated alerts for at-risk accounts
-
-- **Renewal Management**
-  - Renewal pipeline with timeline view
-  - Upsell/cross-sell opportunity identification
-  - Renewal deal scoring (using same engine as new deals)
-
-- **Customer Success Playbooks**
-  - Triggered actions based on health score changes
-  - Onboarding progress tracking
-  - Adoption milestone monitoring
+### Data Hooks
+- `useCustomers.ts` - CRUD operations for customers
+- `useHealthScores.ts` - Health score queries and updates
+- `useRenewals.ts` - Renewal pipeline management
 
 ---
 
-## Phase 6: Executive Dashboard & Analytics (Week 7)
-**Strategic insights and reporting**
+## Phase 6: Executive Dashboard & Analytics
 
-### Features:
-- **Key Metrics Dashboard**
-  - Rule of 40 calculation and trending
-  - CAC ratio by segment (New/Upsell/Expansion/Renewal)
-  - Revenue growth vs. margin visualization
+### Database Views/Functions
+- Aggregation functions for pipeline metrics
+- Deal quality distribution queries
+- Performance comparison queries
 
-- **Deal Quality Analytics**
-  - Deal score distribution over time
-  - Approval cycle time metrics
-  - Exception rate tracking
+### Analytics Dashboard (`src/pages/Analytics.tsx`)
 
-- **Performance Comparisons**
-  - Rep/team/region benchmarking
-  - Product line performance
-  - Go-to-market strategy alignment (Margin/Revenue/Market Share optimal)
+1. **Key Metrics Section**
+   - Rule of 40 calculator (Revenue Growth % + Profit Margin %)
+   - CAC ratio by segment cards
+   - MRR/ARR trending chart
 
----
+2. **Deal Quality Analytics**
+   - Score distribution pie chart
+   - Classification trend over time (line chart)
+   - Approval cycle time metrics
+   - Exception rate tracking
 
-## Phase 7: AI Enhancements (Week 8+)
-**Leverage AI for smarter decisions**
+3. **Performance Comparisons**
+   - Rep/team leaderboard table
+   - Win rate by product line
+   - Average deal size trends
+   - Pipeline velocity metrics
 
-### Features:
-- **AI Deal Coach**
-  - Real-time suggestions to improve deal score
-  - Similar winning deal recommendations
-  - Risk factor identification
+4. **Pipeline Health**
+   - Funnel visualization
+   - Stage conversion rates
+   - Weighted vs unweighted forecast
 
-- **Predictive Analytics**
-  - Win probability scoring
-  - Optimal pricing recommendations
-  - Best next action suggestions
-
-- **Natural Language Insights**
-  - Ask questions about your pipeline in plain English
-  - Automated deal summaries
-  - Trend explanations
+### Components
+- `MetricCard.tsx` - Reusable KPI display
+- `Rule40Calculator.tsx` - Interactive Rule of 40 widget
+- `DealDistributionChart.tsx` - Pie/donut chart
+- `PerformanceTable.tsx` - Sortable leaderboard
+- `PipelineFunnel.tsx` - Visual funnel component
 
 ---
 
-## Technical Architecture
+## Phase 7: AI Enhancements
 
-### Frontend
-- React with TypeScript
-- Tailwind CSS with shadcn/ui components
-- Recharts for data visualization
-- React Router for navigation
+### Edge Function: AI Deal Coach
 
-### Backend (Lovable Cloud / Supabase)
-- PostgreSQL database with Row Level Security
-- User authentication and role management
-- Real-time subscriptions for live updates
-- Edge functions for AI integrations
+Create a backend function that analyzes deals and provides recommendations.
 
-### Data Model (Core Tables)
-- Users & Profiles (with roles)
-- Deals (with full attribute tracking)
-- Scoring Configurations (attributes, weights, thresholds)
-- Journeys & Touchpoints
-- Leads & Opportunities
-- Customers & Health Scores
-- Renewals
+**Endpoint**: `supabase/functions/ai-deal-coach/index.ts`
+
+**Capabilities**:
+- Score improvement suggestions based on deal attributes
+- Similar winning deal recommendations
+- Risk factor identification
+- Natural language deal summaries
+
+### UI Integration
+
+1. **AI Coach Panel** (`src/components/deals/AICoachPanel.tsx`)
+   - Integrated into Deal Detail page
+   - "Get AI Suggestions" button
+   - Displays actionable recommendations
+   - Shows similar successful deals
+
+2. **AI Insights Widget** (`src/components/ai/AIInsightsWidget.tsx`)
+   - Dashboard integration
+   - Quick pipeline insights
+   - Trend explanations
+
+3. **Natural Language Query** (`src/components/ai/AskAI.tsx`)
+   - Simple input for asking questions
+   - "How many deals are at risk?"
+   - "What's my pipeline value?"
+
+### Technical Implementation
+- Uses Lovable AI (gemini-2.5-flash for fast responses)
+- Edge function handles prompts and context building
+- Client-side streaming for real-time response display
 
 ---
 
-## Starting Point
-We'll begin with **Phase 1** - building the authentication system, role management, and the navigation shell. This gives us a solid foundation to build each subsequent module on top of, and you'll be able to see progress immediately with a working login flow and dashboard structure.
+## Implementation Order
+
+### Step 1: Phase 5 Database
+Create customers, health scores, and renewals tables with RLS policies.
+
+### Step 2: Phase 5 UI
+Build customer management interface and health tracking.
+
+### Step 3: Phase 6 Analytics
+Implement executive dashboard with charts and metrics.
+
+### Step 4: Phase 7 AI
+Deploy edge function and integrate AI coach into deal workflow.
+
+---
+
+## Technical Details
+
+### New Database Tables
+
+```text
+customers
+├── id (uuid, PK)
+├── name (text)
+├── industry (text)
+├── tier (customer_tier enum)
+├── contract_start_date (date)
+├── contract_end_date (date)
+├── mrr (numeric)
+├── arr (numeric)
+├── health_score (numeric)
+├── health_status (health_status enum)
+├── owner_id (uuid, FK → auth.users)
+└── created_at, updated_at (timestamps)
+
+customer_health_scores
+├── id (uuid, PK)
+├── customer_id (uuid, FK → customers)
+├── score (numeric)
+├── indicators (jsonb)
+├── scored_at (timestamp)
+└── created_at (timestamp)
+
+renewals
+├── id (uuid, PK)
+├── customer_id (uuid, FK → customers)
+├── deal_id (uuid, FK → deals, nullable)
+├── status (renewal_status enum)
+├── renewal_date (date)
+├── current_value (numeric)
+├── proposed_value (numeric)
+├── risk_level (text)
+├── owner_id (uuid, FK → auth.users)
+└── created_at, updated_at (timestamps)
+```
+
+### New Type Definitions
+
+```text
+src/types/customers.ts
+├── Customer
+├── CustomerHealthScore
+├── Renewal
+├── CustomerTier (enum)
+├── HealthStatus (enum)
+└── RenewalStatus (enum)
+```
+
+### New Hooks
+
+```text
+src/hooks/useCustomers.ts
+├── useCustomers()
+├── useCustomer(id)
+├── useCreateCustomer()
+├── useUpdateCustomer()
+└── useDeleteCustomer()
+
+src/hooks/useRenewals.ts
+├── useRenewals()
+├── useCustomerRenewals(customerId)
+├── useCreateRenewal()
+└── useUpdateRenewal()
+
+src/hooks/useAnalytics.ts
+├── usePipelineMetrics()
+├── useDealDistribution()
+├── usePerformanceData()
+└── useRule40Data()
+```
+
+### AI Edge Function Structure
+
+```text
+supabase/functions/ai-deal-coach/
+├── index.ts (main handler)
+└── _shared/
+    └── prompts.ts (system prompts)
+```
+
+---
+
+## File Changes Summary
+
+### New Files (15+)
+- Database migration for Phase 5 tables
+- `src/types/customers.ts`
+- `src/hooks/useCustomers.ts`
+- `src/hooks/useRenewals.ts`
+- `src/hooks/useAnalytics.ts`
+- `src/pages/CustomerDetail.tsx`
+- `src/components/customers/CustomerHealthCard.tsx`
+- `src/components/customers/HealthScoreHistory.tsx`
+- `src/components/customers/RenewalPipeline.tsx`
+- `src/components/analytics/MetricCard.tsx`
+- `src/components/analytics/DealDistributionChart.tsx`
+- `src/components/analytics/PerformanceTable.tsx`
+- `src/components/deals/AICoachPanel.tsx`
+- `supabase/functions/ai-deal-coach/index.ts`
+
+### Modified Files
+- `src/pages/Customers.tsx` - Full implementation
+- `src/pages/Analytics.tsx` - Full implementation
+- `src/pages/DealDetail.tsx` - Add AI coach panel
+- `src/pages/Dashboard.tsx` - Add AI insights widget
+- `src/App.tsx` - Add CustomerDetail route
+
+---
+
+## Expected Outcome
+
+After implementation, the platform will include:
+
+1. **Customer 360 View** - Complete customer lifecycle visibility
+2. **Proactive Health Monitoring** - At-risk customer alerts
+3. **Renewal Pipeline** - Upcoming renewals with risk indicators
+4. **Executive Metrics** - Rule of 40, CAC ratios, performance benchmarks
+5. **AI-Powered Insights** - Deal improvement suggestions and natural language queries
+6. **Complete Revenue Lifecycle** - Marketing → Sales → Deals → Customer Success → Renewals
 
