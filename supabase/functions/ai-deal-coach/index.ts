@@ -15,12 +15,204 @@ interface DealContext {
   status: string;
   discount_percent: number | null;
   contract_length_months: number | null;
+  payment_terms: string | null;
   scores: Array<{
     attribute_name: string;
     category: string;
     raw_value: number;
     normalized_score: number;
   }>;
+}
+
+interface RiskFactor {
+  severity: "high" | "medium" | "low";
+  title: string;
+  description: string;
+  recommendation: string;
+}
+
+interface Recommendation {
+  priority: number;
+  title: string;
+  description: string;
+  impact: string;
+  effort: "low" | "medium" | "high";
+}
+
+function analyzeRisks(dealContext: DealContext): RiskFactor[] {
+  const risks: RiskFactor[] = [];
+  
+  // High discount risk
+  if (dealContext.discount_percent && dealContext.discount_percent > 30) {
+    risks.push({
+      severity: "high",
+      title: "Excessive Discount",
+      description: `${dealContext.discount_percent}% discount exceeds standard thresholds and impacts margin significantly.`,
+      recommendation: "Negotiate value-adds or extended terms instead of additional discount."
+    });
+  } else if (dealContext.discount_percent && dealContext.discount_percent > 20) {
+    risks.push({
+      severity: "medium",
+      title: "Above-Average Discount",
+      description: `${dealContext.discount_percent}% discount is above typical ranges for this deal size.`,
+      recommendation: "Document competitive pressure or strategic justification."
+    });
+  }
+
+  // Short contract risk
+  if (dealContext.contract_length_months && dealContext.contract_length_months < 12) {
+    risks.push({
+      severity: "medium",
+      title: "Short Contract Term",
+      description: `${dealContext.contract_length_months}-month contract reduces lifetime value and increases churn risk.`,
+      recommendation: "Offer incentives for longer commitment periods."
+    });
+  }
+
+  // Low score attributes
+  const lowScores = dealContext.scores.filter(s => s.normalized_score < 50);
+  if (lowScores.length > 2) {
+    risks.push({
+      severity: "high",
+      title: "Multiple Weak Scoring Areas",
+      description: `${lowScores.length} attributes scoring below 50% threshold.`,
+      recommendation: "Address weakest attributes before submitting for approval."
+    });
+  }
+
+  // Classification risk
+  if (dealContext.classification === "red") {
+    risks.push({
+      severity: "high",
+      title: "Exception Required",
+      description: "Deal requires executive exception approval due to red classification.",
+      recommendation: "Prepare detailed justification with strategic rationale."
+    });
+  } else if (dealContext.classification === "yellow") {
+    risks.push({
+      severity: "medium",
+      title: "Additional Review Required",
+      description: "Deal requires Deal Desk review before approval.",
+      recommendation: "Proactively address concerns flagged in scoring."
+    });
+  }
+
+  // Payment terms risk
+  if (dealContext.payment_terms && dealContext.payment_terms.includes("60")) {
+    risks.push({
+      severity: "medium",
+      title: "Extended Payment Terms",
+      description: "Net 60+ payment terms impact cash flow and increase risk.",
+      recommendation: "Negotiate shorter terms or early payment discount."
+    });
+  }
+
+  // Small deal size with high effort
+  if (dealContext.deal_value < 10000) {
+    risks.push({
+      severity: "low",
+      title: "Deal Size Efficiency",
+      description: "Small deal value may not justify high-touch sales process.",
+      recommendation: "Consider streamlined approval path or self-service options."
+    });
+  }
+
+  return risks.sort((a, b) => {
+    const order = { high: 0, medium: 1, low: 2 };
+    return order[a.severity] - order[b.severity];
+  });
+}
+
+function generateRecommendations(dealContext: DealContext, risks: RiskFactor[]): Recommendation[] {
+  const recommendations: Recommendation[] = [];
+  let priority = 1;
+
+  // Score-based recommendations
+  const lowestScores = [...dealContext.scores]
+    .sort((a, b) => a.normalized_score - b.normalized_score)
+    .slice(0, 3);
+
+  for (const score of lowestScores) {
+    if (score.normalized_score < 70) {
+      recommendations.push({
+        priority: priority++,
+        title: `Improve ${score.attribute_name}`,
+        description: `Current score: ${Math.round(score.normalized_score)}%. This ${score.category} attribute is dragging down overall deal quality.`,
+        impact: score.normalized_score < 50 ? "High - Could shift classification" : "Medium - Improves approval odds",
+        effort: "medium"
+      });
+    }
+  }
+
+  // Contract optimization
+  if (dealContext.contract_length_months && dealContext.contract_length_months < 24) {
+    recommendations.push({
+      priority: priority++,
+      title: "Extend Contract Term",
+      description: "Longer contracts improve LTV and reduce churn risk. Consider offering year 2-3 discounts.",
+      impact: "Medium - Improves customer score and strategic value",
+      effort: "low"
+    });
+  }
+
+  // Discount optimization
+  if (dealContext.discount_percent && dealContext.discount_percent > 15) {
+    recommendations.push({
+      priority: priority++,
+      title: "Restructure Discount",
+      description: "Convert some discount to value-adds (training, support, services) to protect margin.",
+      impact: "High - Improves financial metrics",
+      effort: "medium"
+    });
+  }
+
+  // Product mix
+  if (dealContext.deal_value > 50000) {
+    recommendations.push({
+      priority: priority++,
+      title: "Add Strategic Products",
+      description: "Large deals benefit from multi-product bundles that increase stickiness.",
+      impact: "Medium - Improves strategic score",
+      effort: "high"
+    });
+  }
+
+  return recommendations.slice(0, 5);
+}
+
+function calculateScoreOptimization(dealContext: DealContext): { current: number; potential: number; actions: string[] } {
+  const current = dealContext.total_score || 0;
+  let potential = current;
+  const actions: string[] = [];
+
+  // Calculate potential improvements
+  const lowScores = dealContext.scores.filter(s => s.normalized_score < 70);
+  for (const score of lowScores) {
+    const improvement = (70 - score.normalized_score) * 0.5; // 50% of gap is achievable
+    potential += improvement;
+    if (improvement > 5) {
+      actions.push(`Improving ${score.attribute_name} could add ~${Math.round(improvement)} points`);
+    }
+  }
+
+  // Contract length bonus
+  if (dealContext.contract_length_months && dealContext.contract_length_months < 24) {
+    potential += 5;
+    actions.push("Extending to 24+ months adds ~5 points");
+  }
+
+  // Discount reduction
+  if (dealContext.discount_percent && dealContext.discount_percent > 20) {
+    const discountReduction = (dealContext.discount_percent - 20) * 0.3;
+    potential += discountReduction;
+    actions.push(`Reducing discount to 20% adds ~${Math.round(discountReduction)} points`);
+  }
+
+  return {
+    current: Math.round(current),
+    potential: Math.min(Math.round(potential), 100),
+    actions: actions.slice(0, 4)
+  };
 }
 
 Deno.serve(async (req) => {
@@ -54,7 +246,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { dealId, action } = await req.json();
+    const { dealId, action, message } = await req.json();
 
     if (!dealId) {
       return new Response(JSON.stringify({ error: "dealId is required" }), {
@@ -100,6 +292,7 @@ Deno.serve(async (req) => {
       status: deal.status,
       discount_percent: deal.discount_percent,
       contract_length_months: deal.contract_length_months,
+      payment_terms: deal.payment_terms,
       scores: (scores || []).map((s: any) => ({
         attribute_name: s.scoring_attributes?.name || "Unknown",
         category: s.scoring_attributes?.category || "Unknown",
@@ -107,6 +300,27 @@ Deno.serve(async (req) => {
         normalized_score: s.normalized_score,
       })),
     };
+
+    // Calculate risks and recommendations
+    const risks = analyzeRisks(dealContext);
+    const recommendations = generateRecommendations(dealContext, risks);
+    const scoreOptimization = calculateScoreOptimization(dealContext);
+
+    // For quick actions, return structured data without AI call
+    if (action === "quick-analysis") {
+      return new Response(JSON.stringify({
+        risks,
+        recommendations,
+        scoreOptimization,
+        dealContext: {
+          name: deal.name,
+          classification: deal.classification,
+          total_score: deal.total_score,
+        },
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // Fetch similar won deals for comparison
     const { data: similarDeals } = await supabase
@@ -117,29 +331,72 @@ Deno.serve(async (req) => {
       .lte("deal_value", deal.deal_value * 2)
       .limit(3);
 
-    const systemPrompt = `You are an AI Deal Coach for a B2B sales organization. Your role is to analyze deal data and provide actionable recommendations to improve deal quality, identify risks, and suggest strategies for closing deals successfully.
+    // Fetch market strategy for context
+    const { data: marketStrategy } = await supabase
+      .from("market_strategy")
+      .select("*")
+      .eq("is_active", true)
+      .limit(1)
+      .maybeSingle();
+
+    const systemPrompt = `You are an AI Deal Coach for a B2B sales organization using a Revenue Acceleration methodology. Your role is to analyze deal data and provide actionable recommendations to improve deal quality and increase win rates.
 
 You have access to:
 1. The current deal's scoring attributes and values
-2. Similar successfully closed deals for comparison
-3. The deal's classification (green = high quality, yellow = needs review, red = exception required)
+2. Risk analysis identifying potential issues
+3. Similar successfully closed deals for comparison
+4. The company's market strategy (${marketStrategy?.market_mode || "balanced"} mode)
+5. Pre-calculated recommendations and score optimization opportunities
 
-When analyzing deals:
-- Focus on specific, actionable recommendations
-- Identify the 2-3 biggest opportunities for improvement
-- Highlight any red flags or risks
-- Compare against similar successful deals
-- Keep responses concise but valuable
+When responding:
+- Be conversational but professional
+- Provide specific, actionable advice
+- Reference actual data from the deal
+- Keep responses focused and valuable
+- Use markdown formatting for clarity
 
-Format your response with clear sections:
-- **Summary**: 1-2 sentence deal overview
-- **Key Risks**: Bullet points of concerns
-- **Recommendations**: Numbered action items
-- **Similar Wins**: Brief comparison to successful deals`;
+Current Deal Risks Identified:
+${risks.map(r => `- [${r.severity.toUpperCase()}] ${r.title}: ${r.description}`).join('\n')}
 
-    const userPrompt = action === "summary" 
-      ? `Provide a brief summary of this deal and its current status:\n\n${JSON.stringify(dealContext, null, 2)}`
-      : `Analyze this deal and provide recommendations for improving its score and chances of success:
+Score Optimization Potential:
+- Current Score: ${scoreOptimization.current}
+- Potential Score: ${scoreOptimization.potential}
+- Key Actions: ${scoreOptimization.actions.join('; ')}
+
+Top Recommendations:
+${recommendations.map(r => `${r.priority}. ${r.title}: ${r.description}`).join('\n')}`;
+
+    let userPrompt: string;
+    
+    if (action === "chat" && message) {
+      // Conversational mode
+      userPrompt = `User question about this deal: "${message}"
+
+Deal Context:
+${JSON.stringify(dealContext, null, 2)}
+
+Similar Won Deals:
+${JSON.stringify(similarDeals || [], null, 2)}
+
+Please provide a helpful, conversational response to their question.`;
+    } else if (action === "summary") {
+      userPrompt = `Provide a brief 2-3 sentence executive summary of this deal's status and most important consideration:
+
+${JSON.stringify(dealContext, null, 2)}`;
+    } else if (action === "negotiation") {
+      userPrompt = `The sales rep is about to enter final negotiations. Based on this deal's profile, provide tactical negotiation recommendations:
+
+Deal Data:
+${JSON.stringify(dealContext, null, 2)}
+
+Focus on:
+1. What concessions can be offered without impacting score
+2. What should be protected at all costs
+3. Creative alternatives to discounting
+4. Recommended counter-offers for common customer requests`;
+    } else {
+      // Full analysis mode
+      userPrompt = `Provide a comprehensive analysis of this deal with recommendations for improvement:
 
 Deal Data:
 ${JSON.stringify(dealContext, null, 2)}
@@ -147,11 +404,16 @@ ${JSON.stringify(dealContext, null, 2)}
 Similar Won Deals:
 ${JSON.stringify(similarDeals || [], null, 2)}
 
+Company Strategy: ${marketStrategy?.market_mode || "balanced"} mode
+Max allowed discount: ${marketStrategy?.max_discount_percent || 30}%
+
 Focus on:
-1. Which scoring attributes are holding back the overall score
-2. Specific actions to improve weak areas
-3. Risks that need to be addressed before approval
-4. How this deal compares to similar successful deals`;
+1. Overall deal health assessment
+2. The 2-3 most impactful improvements
+3. Risks that need addressing before approval
+4. How this compares to similar successful deals
+5. Next steps for the sales rep`;
+    }
 
     // Call Lovable AI Gateway
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -161,12 +423,12 @@ Focus on:
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        max_tokens: 1000,
+        max_tokens: 1500,
         temperature: 0.7,
       }),
     });
@@ -174,6 +436,21 @@ Focus on:
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
       console.error("AI Gateway error:", errorText);
+      
+      if (aiResponse.status === 429) {
+        return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }), {
+          status: 429,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      
+      if (aiResponse.status === 402) {
+        return new Response(JSON.stringify({ error: "AI credits exhausted. Please add credits to continue." }), {
+          status: 402,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      
       return new Response(JSON.stringify({ error: "AI analysis failed" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -185,6 +462,9 @@ Focus on:
 
     return new Response(JSON.stringify({ 
       analysis,
+      risks,
+      recommendations,
+      scoreOptimization,
       dealContext: {
         name: deal.name,
         classification: deal.classification,

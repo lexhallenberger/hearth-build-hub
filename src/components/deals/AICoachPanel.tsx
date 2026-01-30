@@ -1,159 +1,126 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { useState, useEffect } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
-import { Sparkles, Loader2, RefreshCw, AlertTriangle, CheckCircle, Lightbulb } from 'lucide-react';
+import { Sparkles, AlertTriangle, Lightbulb, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Deal } from '@/types/deals';
+import { RiskAlerts } from '@/components/ai-coach/RiskAlerts';
+import { RecommendationCards } from '@/components/ai-coach/RecommendationCards';
+import { DealAdvisorChat } from '@/components/ai-coach/DealAdvisorChat';
 
 interface AICoachPanelProps {
   deal: Deal;
 }
 
-export function AICoachPanel({ deal }: AICoachPanelProps) {
-  const [analysis, setAnalysis] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+interface RiskFactor {
+  severity: 'high' | 'medium' | 'low';
+  title: string;
+  description: string;
+  recommendation: string;
+}
 
-  const getAnalysis = async () => {
+interface Recommendation {
+  priority: number;
+  title: string;
+  description: string;
+  impact: string;
+  effort: 'low' | 'medium' | 'high';
+}
+
+interface ScoreOptimization {
+  current: number;
+  potential: number;
+  actions: string[];
+}
+
+export function AICoachPanel({ deal }: AICoachPanelProps) {
+  const [risks, setRisks] = useState<RiskFactor[]>([]);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [scoreOptimization, setScoreOptimization] = useState<ScoreOptimization>({
+    current: 0,
+    potential: 0,
+    actions: [],
+  });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    loadQuickAnalysis();
+  }, [deal.id]);
+
+  const loadQuickAnalysis = async () => {
     setIsLoading(true);
-    setError(null);
     
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session?.access_token) {
-        throw new Error('Not authenticated');
-      }
-
-      const response = await supabase.functions.invoke('ai-deal-coach', {
-        body: { dealId: deal.id, action: 'analyze' },
+      const { data, error } = await supabase.functions.invoke('ai-deal-coach', {
+        body: { dealId: deal.id, action: 'quick-analysis' },
       });
 
-      if (response.error) {
-        throw new Error(response.error.message || 'Failed to get AI analysis');
-      }
+      if (error) throw error;
 
-      setAnalysis(response.data.analysis);
+      setRisks(data.risks || []);
+      setRecommendations(data.recommendations || []);
+      setScoreOptimization(data.scoreOptimization || { current: 0, potential: 0, actions: [] });
     } catch (err) {
-      console.error('AI Coach error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to get AI analysis');
-      toast.error('Failed to get AI analysis');
+      console.error('Quick analysis error:', err);
+      toast.error('Failed to load deal analysis');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const formatAnalysis = (text: string) => {
-    // Convert markdown-style formatting to JSX
-    return text.split('\n').map((line, i) => {
-      // Headers
-      if (line.startsWith('**') && line.endsWith('**')) {
-        return (
-          <h4 key={i} className="font-bold mt-4 mb-2 text-foreground">
-            {line.replace(/\*\*/g, '')}
-          </h4>
-        );
-      }
-      // Bold inline
-      if (line.includes('**')) {
-        const parts = line.split(/\*\*(.+?)\*\*/g);
-        return (
-          <p key={i} className="mb-1">
-            {parts.map((part, j) => 
-              j % 2 === 1 ? <strong key={j}>{part}</strong> : part
-            )}
-          </p>
-        );
-      }
-      // Bullet points
-      if (line.startsWith('- ') || line.startsWith('• ')) {
-        return (
-          <li key={i} className="ml-4 mb-1">
-            {line.substring(2)}
-          </li>
-        );
-      }
-      // Numbered items
-      if (/^\d+\.\s/.test(line)) {
-        return (
-          <li key={i} className="ml-4 mb-1 list-decimal">
-            {line.replace(/^\d+\.\s/, '')}
-          </li>
-        );
-      }
-      // Regular text
-      if (line.trim()) {
-        return <p key={i} className="mb-2 text-muted-foreground">{line}</p>;
-      }
-      return null;
-    });
-  };
+  const highRiskCount = risks.filter(r => r.severity === 'high').length;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <div className="h-10 w-10 rounded-full bg-accent/10 flex items-center justify-center">
           <Sparkles className="h-5 w-5 text-accent" />
-          AI Deal Coach
-        </CardTitle>
-        <CardDescription>
-          Get AI-powered insights and recommendations for this deal
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {!analysis && !isLoading && !error && (
-          <div className="flex flex-col items-center justify-center py-8 text-center">
-            <Lightbulb className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="font-medium mb-2">Ready to Analyze</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Get AI-powered recommendations to improve this deal's score and increase your chances of winning.
-            </p>
-            <Button onClick={getAnalysis} className="bg-accent hover:bg-accent/90">
-              <Sparkles className="mr-2 h-4 w-4" />
-              Analyze Deal
-            </Button>
-          </div>
-        )}
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold">AI Deal Coach</h2>
+          <p className="text-sm text-muted-foreground">
+            Intelligent analysis and recommendations for {deal.name}
+          </p>
+        </div>
+      </div>
 
-        {isLoading && (
-          <div className="flex flex-col items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-accent mb-4" />
-            <p className="text-sm text-muted-foreground">Analyzing deal...</p>
-          </div>
-        )}
+      <Tabs defaultValue="risks" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="risks" className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4" />
+            Risks
+            {highRiskCount > 0 && (
+              <span className="ml-1 h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-xs flex items-center justify-center">
+                {highRiskCount}
+              </span>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="recommendations" className="flex items-center gap-2">
+            <Lightbulb className="h-4 w-4" />
+            Recommendations
+          </TabsTrigger>
+          <TabsTrigger value="chat" className="flex items-center gap-2">
+            <MessageCircle className="h-4 w-4" />
+            Chat
+          </TabsTrigger>
+        </TabsList>
 
-        {error && (
-          <div className="flex flex-col items-center justify-center py-8 text-center">
-            <AlertTriangle className="h-12 w-12 text-destructive mb-4" />
-            <h3 className="font-medium mb-2">Analysis Failed</h3>
-            <p className="text-sm text-muted-foreground mb-4">{error}</p>
-            <Button onClick={getAnalysis} variant="outline">
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Try Again
-            </Button>
-          </div>
-        )}
+        <TabsContent value="risks">
+          <RiskAlerts risks={risks} isLoading={isLoading} />
+        </TabsContent>
 
-        {analysis && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <CheckCircle className="h-3 w-3" />
-                Analysis Complete
-              </Badge>
-              <Button onClick={getAnalysis} variant="ghost" size="sm">
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Refresh
-              </Button>
-            </div>
-            <div className="prose prose-sm max-w-none dark:prose-invert">
-              {formatAnalysis(analysis)}
-            </div>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+        <TabsContent value="recommendations">
+          <RecommendationCards 
+            recommendations={recommendations}
+            scoreOptimization={scoreOptimization}
+            isLoading={isLoading}
+          />
+        </TabsContent>
+
+        <TabsContent value="chat">
+          <DealAdvisorChat dealId={deal.id} dealName={deal.name} />
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }
