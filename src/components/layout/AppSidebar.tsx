@@ -11,6 +11,7 @@ import {
   TrendingUp,
   ChevronLeft,
   Target,
+  DollarSign,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { NavLink } from '@/components/NavLink';
@@ -48,6 +49,7 @@ const mainNavItems: NavItem[] = [
   { title: 'Pipeline', url: '/pipeline', icon: Megaphone, roles: ['admin', 'sales_rep', 'executive'] },
   { title: 'Customers', url: '/customers', icon: Users },
   { title: 'Analytics', url: '/analytics', icon: BarChart3, roles: ['admin', 'executive', 'finance'] },
+  { title: 'Financials', url: '/financials', icon: DollarSign, roles: ['admin', 'executive', 'finance'] },
 ];
 
 const adminNavItems: NavItem[] = [

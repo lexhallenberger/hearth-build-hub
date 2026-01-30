@@ -231,6 +231,56 @@ export type Database = {
           },
         ]
       }
+      deal_economics: {
+        Row: {
+          cac_ltv_ratio: number | null
+          calculated_ltv: number | null
+          churn_rate_percent: number | null
+          created_at: string
+          customer_acquisition_cost: number | null
+          deal_id: string
+          gross_margin_percent: number | null
+          id: string
+          payback_period_months: number | null
+          revenue_type: Database["public"]["Enums"]["revenue_type"]
+          updated_at: string
+        }
+        Insert: {
+          cac_ltv_ratio?: number | null
+          calculated_ltv?: number | null
+          churn_rate_percent?: number | null
+          created_at?: string
+          customer_acquisition_cost?: number | null
+          deal_id: string
+          gross_margin_percent?: number | null
+          id?: string
+          payback_period_months?: number | null
+          revenue_type?: Database["public"]["Enums"]["revenue_type"]
+          updated_at?: string
+        }
+        Update: {
+          cac_ltv_ratio?: number | null
+          calculated_ltv?: number | null
+          churn_rate_percent?: number | null
+          created_at?: string
+          customer_acquisition_cost?: number | null
+          deal_id?: string
+          gross_margin_percent?: number | null
+          id?: string
+          payback_period_months?: number | null
+          revenue_type?: Database["public"]["Enums"]["revenue_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_economics_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: true
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deal_notes: {
         Row: {
           content: string
@@ -475,6 +525,113 @@ export type Database = {
             columns: ["segment_id"]
             isOneToOne: false
             referencedRelation: "deal_segments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financial_metrics: {
+        Row: {
+          arr: number | null
+          avg_deal_size: number | null
+          avg_sales_cycle_days: number | null
+          churned_arr: number | null
+          created_at: string
+          expansion_arr: number | null
+          gross_revenue_retention: number | null
+          id: string
+          mrr: number | null
+          net_revenue_retention: number | null
+          new_arr: number | null
+          period_date: string
+          profit_margin_percent: number | null
+          revenue_growth_rate: number | null
+          rule_of_40_score: number | null
+          total_cac: number | null
+          updated_at: string
+        }
+        Insert: {
+          arr?: number | null
+          avg_deal_size?: number | null
+          avg_sales_cycle_days?: number | null
+          churned_arr?: number | null
+          created_at?: string
+          expansion_arr?: number | null
+          gross_revenue_retention?: number | null
+          id?: string
+          mrr?: number | null
+          net_revenue_retention?: number | null
+          new_arr?: number | null
+          period_date: string
+          profit_margin_percent?: number | null
+          revenue_growth_rate?: number | null
+          rule_of_40_score?: number | null
+          total_cac?: number | null
+          updated_at?: string
+        }
+        Update: {
+          arr?: number | null
+          avg_deal_size?: number | null
+          avg_sales_cycle_days?: number | null
+          churned_arr?: number | null
+          created_at?: string
+          expansion_arr?: number | null
+          gross_revenue_retention?: number | null
+          id?: string
+          mrr?: number | null
+          net_revenue_retention?: number | null
+          new_arr?: number | null
+          period_date?: string
+          profit_margin_percent?: number | null
+          revenue_growth_rate?: number | null
+          rule_of_40_score?: number | null
+          total_cac?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      friction_events: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          deal_id: string | null
+          description: string
+          duration_hours: number | null
+          friction_type: Database["public"]["Enums"]["friction_type"]
+          id: string
+          resolution_notes: string | null
+          resolved_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string | null
+          description: string
+          duration_hours?: number | null
+          friction_type: Database["public"]["Enums"]["friction_type"]
+          id?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string | null
+          description?: string
+          duration_hours?: number | null
+          friction_type?: Database["public"]["Enums"]["friction_type"]
+          id?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friction_events_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
             referencedColumns: ["id"]
           },
         ]
@@ -1296,6 +1453,7 @@ export type Database = {
         | "rejected"
         | "closed_won"
         | "closed_lost"
+      friction_type: "healthy" | "unhealthy"
       health_status: "healthy" | "at_risk" | "critical"
       journey_type: "customer" | "seller" | "partner" | "deal"
       lead_status:
@@ -1317,6 +1475,7 @@ export type Database = {
         | "renewed"
         | "churned"
         | "expanded"
+      revenue_type: "new_customer" | "upsell" | "expansion" | "renewal"
       scoring_category: "financial" | "strategic" | "risk" | "customer"
     }
     CompositeTypes: {
@@ -1458,6 +1617,7 @@ export const Constants = {
         "closed_won",
         "closed_lost",
       ],
+      friction_type: ["healthy", "unhealthy"],
       health_status: ["healthy", "at_risk", "critical"],
       journey_type: ["customer", "seller", "partner", "deal"],
       lead_status: [
@@ -1482,6 +1642,7 @@ export const Constants = {
         "churned",
         "expanded",
       ],
+      revenue_type: ["new_customer", "upsell", "expansion", "renewal"],
       scoring_category: ["financial", "strategic", "risk", "customer"],
     },
   },
