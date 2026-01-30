@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, Loader2, Calculator, CheckCircle, AlertCircle } from 'lucide-react';
 import { DealScoring } from '@/components/deals/DealScoring';
 import { DealScoreChart } from '@/components/deals/DealScoreChart';
+import { DealScoreRadar } from '@/components/deal-governance/DealScoreRadar';
 import { DealInfo } from '@/components/deals/DealInfo';
 import { DealActivity } from '@/components/deals/DealActivity';
 import { DealApprovalPanel } from '@/components/deals/DealApprovalPanel';
@@ -180,12 +181,17 @@ export default function DealDetail() {
         </TabsList>
 
         <TabsContent value="scoring" className="space-y-6">
-          <div className="grid gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-2">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div>
               <DealScoring dealId={deal.id} scores={scores || []} attributes={attributes || []} />
             </div>
             <div>
-              <DealScoreChart scores={scores || []} attributes={attributes || []} />
+              <DealScoreRadar 
+                scores={scores || []} 
+                attributes={attributes || []} 
+                dealClassification={deal.classification}
+                totalScore={deal.total_score}
+              />
             </div>
           </div>
         </TabsContent>

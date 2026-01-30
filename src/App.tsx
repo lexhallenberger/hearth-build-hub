@@ -17,6 +17,7 @@ import Customers from "./pages/Customers";
 import CustomerDetail from "./pages/CustomerDetail";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
+import Strategy from "./pages/Strategy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -115,6 +116,14 @@ const App = () => (
               element={
                 <AppLayout>
                   <Settings />
+                </AppLayout>
+              }
+            />
+            <Route
+              path="/strategy"
+              element={
+                <AppLayout>
+                  <Strategy />
                 </AppLayout>
               }
             />
