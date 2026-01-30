@@ -44,6 +44,7 @@ const mainNavItems: NavItem[] = [
   { title: 'Command Center', url: '/', icon: LayoutDashboard },
   { title: 'Journeys', url: '/journeys', icon: Map },
   { title: 'Deals', url: '/deals', icon: FileText, roles: ['admin', 'sales_rep', 'deal_desk', 'finance', 'executive'] },
+  { title: 'Deal Desk', url: '/deal-desk', icon: Target, roles: ['admin', 'deal_desk', 'finance', 'executive'] },
   { title: 'Pipeline', url: '/pipeline', icon: Megaphone, roles: ['admin', 'sales_rep', 'executive'] },
   { title: 'Customers', url: '/customers', icon: Users },
   { title: 'Analytics', url: '/analytics', icon: BarChart3, roles: ['admin', 'executive', 'finance'] },
