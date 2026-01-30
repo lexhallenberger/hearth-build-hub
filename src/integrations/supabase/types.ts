@@ -317,9 +317,75 @@ export type Database = {
           },
         ]
       }
+      deal_segments: {
+        Row: {
+          approval_level: number
+          approval_sla_hours: number
+          approver_roles: string[] | null
+          auto_approve_enabled: boolean
+          color: string | null
+          created_at: string
+          description: string | null
+          escalation_roles: string[] | null
+          id: string
+          is_active: boolean
+          max_deal_value: number | null
+          max_score: number
+          min_deal_value: number
+          min_score: number
+          name: string
+          priority: number
+          touch_model: string
+          updated_at: string
+        }
+        Insert: {
+          approval_level?: number
+          approval_sla_hours?: number
+          approver_roles?: string[] | null
+          auto_approve_enabled?: boolean
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          escalation_roles?: string[] | null
+          id?: string
+          is_active?: boolean
+          max_deal_value?: number | null
+          max_score?: number
+          min_deal_value?: number
+          min_score?: number
+          name: string
+          priority?: number
+          touch_model?: string
+          updated_at?: string
+        }
+        Update: {
+          approval_level?: number
+          approval_sla_hours?: number
+          approver_roles?: string[] | null
+          auto_approve_enabled?: boolean
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          escalation_roles?: string[] | null
+          id?: string
+          is_active?: boolean
+          max_deal_value?: number | null
+          max_score?: number
+          min_deal_value?: number
+          min_score?: number
+          name?: string
+          priority?: number
+          touch_model?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       deals: {
         Row: {
           actual_close_date: string | null
+          approved_at: string | null
+          approved_by: string | null
+          auto_approved: boolean | null
           classification:
             | Database["public"]["Enums"]["deal_classification"]
             | null
@@ -336,6 +402,7 @@ export type Database = {
           owner_id: string
           payment_terms: string | null
           products: Json | null
+          segment_id: string | null
           status: Database["public"]["Enums"]["deal_status"]
           total_score: number | null
           touchpoint_ids: string[] | null
@@ -343,6 +410,9 @@ export type Database = {
         }
         Insert: {
           actual_close_date?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          auto_approved?: boolean | null
           classification?:
             | Database["public"]["Enums"]["deal_classification"]
             | null
@@ -359,6 +429,7 @@ export type Database = {
           owner_id: string
           payment_terms?: string | null
           products?: Json | null
+          segment_id?: string | null
           status?: Database["public"]["Enums"]["deal_status"]
           total_score?: number | null
           touchpoint_ids?: string[] | null
@@ -366,6 +437,9 @@ export type Database = {
         }
         Update: {
           actual_close_date?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          auto_approved?: boolean | null
           classification?:
             | Database["public"]["Enums"]["deal_classification"]
             | null
@@ -382,6 +456,7 @@ export type Database = {
           owner_id?: string
           payment_terms?: string | null
           products?: Json | null
+          segment_id?: string | null
           status?: Database["public"]["Enums"]["deal_status"]
           total_score?: number | null
           touchpoint_ids?: string[] | null
@@ -393,6 +468,13 @@ export type Database = {
             columns: ["journey_stage_id"]
             isOneToOne: false
             referencedRelation: "journey_stages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_segment_id_fkey"
+            columns: ["segment_id"]
+            isOneToOne: false
+            referencedRelation: "deal_segments"
             referencedColumns: ["id"]
           },
         ]

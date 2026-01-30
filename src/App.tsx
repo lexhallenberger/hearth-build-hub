@@ -8,6 +8,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import Auth from "./pages/Auth";
 import CommandCenter from "./pages/CommandCenter";
 import Deals from "./pages/Deals";
+import DealDesk from "./pages/DealDesk";
 import DealNew from "./pages/DealNew";
 import DealDetail from "./pages/DealDetail";
 import Journeys from "./pages/Journeys";
@@ -52,6 +53,14 @@ const App = () => (
               element={
                 <AppLayout>
                   <DealNew />
+                </AppLayout>
+              }
+            />
+            <Route
+              path="/deal-desk"
+              element={
+                <AppLayout>
+                  <DealDesk />
                 </AppLayout>
               }
             />
