@@ -11,6 +11,7 @@ import Deals from "./pages/Deals";
 import DealNew from "./pages/DealNew";
 import DealDetail from "./pages/DealDetail";
 import Journeys from "./pages/Journeys";
+import JourneyDetail from "./pages/JourneyDetail";
 import Pipeline from "./pages/Pipeline";
 import Customers from "./pages/Customers";
 import Analytics from "./pages/Analytics";
@@ -65,6 +66,14 @@ const App = () => (
               element={
                 <AppLayout>
                   <Journeys />
+                </AppLayout>
+              }
+            />
+            <Route
+              path="/journeys/:id"
+              element={
+                <AppLayout>
+                  <JourneyDetail />
                 </AppLayout>
               }
             />
