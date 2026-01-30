@@ -21,6 +21,10 @@ export interface Deal {
   actual_close_date: string | null;
   created_at: string;
   updated_at: string;
+  // Journey integration fields
+  journey_stage_id?: string | null;
+  touchpoint_ids?: string[];
+  segment_id?: string | null;
 }
 
 export interface ScoringAttribute {
