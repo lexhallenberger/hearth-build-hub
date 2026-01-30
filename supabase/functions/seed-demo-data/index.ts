@@ -47,21 +47,21 @@ serve(async (req) => {
 
     // ============ SEED CUSTOMERS ============
     const customers = [
-      { name: "Acme Corporation", industry: "Technology", tier: "enterprise", mrr: 45000, arr: 540000, health_score: 85, health_status: "healthy", primary_contact_name: "Sarah Johnson", primary_contact_email: "sarah@acme.com" },
-      { name: "TechFlow Inc", industry: "SaaS", tier: "enterprise", mrr: 38000, arr: 456000, health_score: 78, health_status: "healthy", primary_contact_name: "Mike Chen", primary_contact_email: "mike@techflow.io" },
-      { name: "Global Dynamics", industry: "Manufacturing", tier: "enterprise", mrr: 52000, arr: 624000, health_score: 62, health_status: "at_risk", primary_contact_name: "Jennifer Williams", primary_contact_email: "jwilliams@globaldyn.com" },
-      { name: "Innovate Labs", industry: "Biotech", tier: "mid_market", mrr: 18000, arr: 216000, health_score: 91, health_status: "healthy", primary_contact_name: "Dr. Robert Kim", primary_contact_email: "rkim@innovatelabs.co" },
-      { name: "DataStream Analytics", industry: "Analytics", tier: "mid_market", mrr: 22000, arr: 264000, health_score: 73, health_status: "healthy", primary_contact_name: "Emily Davis", primary_contact_email: "emily@datastream.ai" },
-      { name: "CloudNine Solutions", industry: "Cloud Services", tier: "mid_market", mrr: 15000, arr: 180000, health_score: 45, health_status: "at_risk", primary_contact_name: "James Wilson", primary_contact_email: "james@cloudnine.io" },
-      { name: "FinanceHub", industry: "FinTech", tier: "mid_market", mrr: 28000, arr: 336000, health_score: 88, health_status: "healthy", primary_contact_name: "Lisa Park", primary_contact_email: "lisa@financehub.com" },
-      { name: "RetailMax", industry: "Retail", tier: "smb", mrr: 8500, arr: 102000, health_score: 55, health_status: "at_risk", primary_contact_name: "Tom Anderson", primary_contact_email: "tom@retailmax.com" },
-      { name: "HealthTech Pro", industry: "Healthcare", tier: "smb", mrr: 12000, arr: 144000, health_score: 82, health_status: "healthy", primary_contact_name: "Dr. Maria Garcia", primary_contact_email: "mgarcia@healthtech.pro" },
-      { name: "EduLearn Platform", industry: "EdTech", tier: "smb", mrr: 6500, arr: 78000, health_score: 35, health_status: "critical", primary_contact_name: "Kevin Brown", primary_contact_email: "kevin@edulearn.io" },
-      { name: "GreenEnergy Co", industry: "Energy", tier: "enterprise", mrr: 42000, arr: 504000, health_score: 76, health_status: "healthy", primary_contact_name: "Susan Lee", primary_contact_email: "slee@greenenergy.com" },
-      { name: "MediaWave Studios", industry: "Media", tier: "startup", mrr: 3500, arr: 42000, health_score: 68, health_status: "healthy", primary_contact_name: "Alex Turner", primary_contact_email: "alex@mediawave.studio" },
-      { name: "SecureNet Systems", industry: "Cybersecurity", tier: "mid_market", mrr: 25000, arr: 300000, health_score: 94, health_status: "healthy", primary_contact_name: "Chris Martinez", primary_contact_email: "cmartinez@securenet.io" },
-      { name: "LogiChain Express", industry: "Logistics", tier: "smb", mrr: 9000, arr: 108000, health_score: 71, health_status: "healthy", primary_contact_name: "Patricia Moore", primary_contact_email: "pmoore@logichain.com" },
-      { name: "FoodTech Innovations", industry: "Food & Beverage", tier: "startup", mrr: 4200, arr: 50400, health_score: 58, health_status: "at_risk", primary_contact_name: "Daniel White", primary_contact_email: "dan@foodtech.io" },
+      { name: "Acme Corporation", industry: "Technology", tier: "enterprise", mrr: 45000, health_score: 85, health_status: "healthy", primary_contact_name: "Sarah Johnson", primary_contact_email: "sarah@acme.com" },
+      { name: "TechFlow Inc", industry: "SaaS", tier: "enterprise", mrr: 38000, health_score: 78, health_status: "healthy", primary_contact_name: "Mike Chen", primary_contact_email: "mike@techflow.io" },
+      { name: "Global Dynamics", industry: "Manufacturing", tier: "enterprise", mrr: 52000, health_score: 62, health_status: "at_risk", primary_contact_name: "Jennifer Williams", primary_contact_email: "jwilliams@globaldyn.com" },
+      { name: "Innovate Labs", industry: "Biotech", tier: "mid_market", mrr: 18000, health_score: 91, health_status: "healthy", primary_contact_name: "Dr. Robert Kim", primary_contact_email: "rkim@innovatelabs.co" },
+      { name: "DataStream Analytics", industry: "Analytics", tier: "mid_market", mrr: 22000, health_score: 73, health_status: "healthy", primary_contact_name: "Emily Davis", primary_contact_email: "emily@datastream.ai" },
+      { name: "CloudNine Solutions", industry: "Cloud Services", tier: "mid_market", mrr: 15000, health_score: 45, health_status: "at_risk", primary_contact_name: "James Wilson", primary_contact_email: "james@cloudnine.io" },
+      { name: "FinanceHub", industry: "FinTech", tier: "mid_market", mrr: 28000, health_score: 88, health_status: "healthy", primary_contact_name: "Lisa Park", primary_contact_email: "lisa@financehub.com" },
+      { name: "RetailMax", industry: "Retail", tier: "smb", mrr: 8500, health_score: 55, health_status: "at_risk", primary_contact_name: "Tom Anderson", primary_contact_email: "tom@retailmax.com" },
+      { name: "HealthTech Pro", industry: "Healthcare", tier: "smb", mrr: 12000, health_score: 82, health_status: "healthy", primary_contact_name: "Dr. Maria Garcia", primary_contact_email: "mgarcia@healthtech.pro" },
+      { name: "EduLearn Platform", industry: "EdTech", tier: "smb", mrr: 6500, health_score: 35, health_status: "critical", primary_contact_name: "Kevin Brown", primary_contact_email: "kevin@edulearn.io" },
+      { name: "GreenEnergy Co", industry: "Energy", tier: "enterprise", mrr: 42000, health_score: 76, health_status: "healthy", primary_contact_name: "Susan Lee", primary_contact_email: "slee@greenenergy.com" },
+      { name: "MediaWave Studios", industry: "Media", tier: "startup", mrr: 3500, health_score: 68, health_status: "healthy", primary_contact_name: "Alex Turner", primary_contact_email: "alex@mediawave.studio" },
+      { name: "SecureNet Systems", industry: "Cybersecurity", tier: "mid_market", mrr: 25000, health_score: 94, health_status: "healthy", primary_contact_name: "Chris Martinez", primary_contact_email: "cmartinez@securenet.io" },
+      { name: "LogiChain Express", industry: "Logistics", tier: "smb", mrr: 9000, health_score: 71, health_status: "healthy", primary_contact_name: "Patricia Moore", primary_contact_email: "pmoore@logichain.com" },
+      { name: "FoodTech Innovations", industry: "Food & Beverage", tier: "startup", mrr: 4200, health_score: 58, health_status: "at_risk", primary_contact_name: "Daniel White", primary_contact_email: "dan@foodtech.io" },
     ];
 
     const { data: insertedCustomers, error: customerError } = await supabaseClient
