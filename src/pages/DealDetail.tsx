@@ -10,6 +10,7 @@ import { DealScoreChart } from '@/components/deals/DealScoreChart';
 import { DealInfo } from '@/components/deals/DealInfo';
 import { DealActivity } from '@/components/deals/DealActivity';
 import { DealApprovalPanel } from '@/components/deals/DealApprovalPanel';
+import { AICoachPanel } from '@/components/deals/AICoachPanel';
 import { STATUS_LABELS, STATUS_COLORS, CLASSIFICATION_COLORS, CLASSIFICATION_LABELS } from '@/types/deals';
 
 export default function DealDetail() {
@@ -172,6 +173,7 @@ export default function DealDetail() {
           <TabsTrigger value="scoring">
             Scoring ({scoredCount}/{totalAttributes})
           </TabsTrigger>
+          <TabsTrigger value="ai-coach">AI Coach</TabsTrigger>
           <TabsTrigger value="approval">Approval</TabsTrigger>
           <TabsTrigger value="details">Details</TabsTrigger>
           <TabsTrigger value="activity">Activity</TabsTrigger>
@@ -186,6 +188,10 @@ export default function DealDetail() {
               <DealScoreChart scores={scores || []} attributes={attributes || []} />
             </div>
           </div>
+        </TabsContent>
+
+        <TabsContent value="ai-coach">
+          <AICoachPanel deal={deal} />
         </TabsContent>
 
         <TabsContent value="approval">

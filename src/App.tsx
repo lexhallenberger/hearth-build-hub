@@ -14,6 +14,7 @@ import Journeys from "./pages/Journeys";
 import JourneyDetail from "./pages/JourneyDetail";
 import Pipeline from "./pages/Pipeline";
 import Customers from "./pages/Customers";
+import CustomerDetail from "./pages/CustomerDetail";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
@@ -90,6 +91,14 @@ const App = () => (
               element={
                 <AppLayout>
                   <Customers />
+                </AppLayout>
+              }
+            />
+            <Route
+              path="/customers/:id"
+              element={
+                <AppLayout>
+                  <CustomerDetail />
                 </AppLayout>
               }
             />

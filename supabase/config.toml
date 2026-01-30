@@ -1,1 +1,4 @@
 project_id = "innahexsadlzkqyxgwnz"
+
+[functions.ai-deal-coach]
+verify_jwt = false
