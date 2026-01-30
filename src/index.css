@@ -165,16 +165,66 @@
 @keyframes stagger-in {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(20px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    filter: blur(20px);
+  }
+  50% {
+    opacity: 0.8;
+    filter: blur(30px);
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes border-flow {
+  0% {
+    border-color: hsl(var(--accent) / 0.3);
+  }
+  50% {
+    border-color: hsl(var(--accent) / 0.6);
+  }
+  100% {
+    border-color: hsl(var(--accent) / 0.3);
   }
 }
 
 .animate-flow {
-  animation: flow 0.8s linear infinite;
+  animation: flow 0.6s linear infinite;
 }
 
 .animate-pulse-glow {
@@ -182,7 +232,28 @@
 }
 
 .animate-stagger-in {
-  animation: stagger-in 0.4s ease-out backwards;
+  animation: stagger-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.animate-shimmer {
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+.animate-border-flow {
+  animation: border-flow 2s ease-in-out infinite;
 }
 
 /* Staggered animation delays */
@@ -194,17 +265,63 @@
 
 /* Frosted glass effect */
 .glass {
-  background: hsl(var(--card) / 0.8);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: hsl(var(--card) / 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Premium glass card */
+.glass-card {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--card) / 0.8) 0%,
+    hsl(var(--card) / 0.4) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid hsl(var(--foreground) / 0.1);
 }
 
 /* Canvas grid pattern */
 .canvas-grid {
   background-image: radial-gradient(
     circle,
-    hsl(var(--muted-foreground) / 0.15) 1px,
+    hsl(var(--muted-foreground) / 0.12) 1px,
     transparent 1px
   );
-  background-size: 24px 24px;
+  background-size: 32px 32px;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--chart-4)) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hover lift effect */
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -10px hsl(var(--foreground) / 0.15);
+}
+
+/* Premium shadow */
+.shadow-premium {
+  box-shadow: 
+    0 4px 6px -1px hsl(var(--foreground) / 0.05),
+    0 10px 20px -2px hsl(var(--foreground) / 0.08),
+    0 20px 40px -4px hsl(var(--foreground) / 0.05);
+}
+
+/* Neon glow effect */
+.neon-glow {
+  box-shadow: 
+    0 0 5px hsl(var(--accent) / 0.3),
+    0 0 20px hsl(var(--accent) / 0.2),
+    0 0 40px hsl(var(--accent) / 0.1);
 }
