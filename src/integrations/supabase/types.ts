@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      campaigns: {
+        Row: {
+          actual_spend: number | null
+          budget: number | null
+          campaign_type: string | null
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          owner_id: string
+          start_date: string | null
+          target_leads: number | null
+          updated_at: string
+        }
+        Insert: {
+          actual_spend?: number | null
+          budget?: number | null
+          campaign_type?: string | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          owner_id: string
+          start_date?: string | null
+          target_leads?: number | null
+          updated_at?: string
+        }
+        Update: {
+          actual_spend?: number | null
+          budget?: number | null
+          campaign_type?: string | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          owner_id?: string
+          start_date?: string | null
+          target_leads?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       deal_approvals: {
         Row: {
           approval_level: number
@@ -216,6 +264,418 @@ export type Database = {
         }
         Relationships: []
       }
+      journey_metrics: {
+        Row: {
+          avg_time_in_stage_days: number | null
+          conversions: number | null
+          created_at: string
+          entries: number | null
+          exits: number | null
+          id: string
+          journey_id: string
+          period_end: string
+          period_start: string
+          stage_id: string | null
+        }
+        Insert: {
+          avg_time_in_stage_days?: number | null
+          conversions?: number | null
+          created_at?: string
+          entries?: number | null
+          exits?: number | null
+          id?: string
+          journey_id: string
+          period_end: string
+          period_start: string
+          stage_id?: string | null
+        }
+        Update: {
+          avg_time_in_stage_days?: number | null
+          conversions?: number | null
+          created_at?: string
+          entries?: number | null
+          exits?: number | null
+          id?: string
+          journey_id?: string
+          period_end?: string
+          period_start?: string
+          stage_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journey_metrics_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journeys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journey_metrics_stage_id_fkey"
+            columns: ["stage_id"]
+            isOneToOne: false
+            referencedRelation: "journey_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journey_stages: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          journey_id: string
+          name: string
+          stage_order: number
+          target_conversion_rate: number | null
+          target_time_days: number | null
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          journey_id: string
+          name: string
+          stage_order?: number
+          target_conversion_rate?: number | null
+          target_time_days?: number | null
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          journey_id?: string
+          name?: string
+          stage_order?: number
+          target_conversion_rate?: number | null
+          target_time_days?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journey_stages_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journeys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journey_touchpoints: {
+        Row: {
+          channel: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_moment_of_truth: boolean | null
+          name: string
+          owner_role: string | null
+          pain_point_level: number | null
+          stage_id: string
+          touchpoint_order: number
+          touchpoint_type: string
+          updated_at: string
+          value_message: string | null
+        }
+        Insert: {
+          channel?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_moment_of_truth?: boolean | null
+          name: string
+          owner_role?: string | null
+          pain_point_level?: number | null
+          stage_id: string
+          touchpoint_order?: number
+          touchpoint_type?: string
+          updated_at?: string
+          value_message?: string | null
+        }
+        Update: {
+          channel?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_moment_of_truth?: boolean | null
+          name?: string
+          owner_role?: string | null
+          pain_point_level?: number | null
+          stage_id?: string
+          touchpoint_order?: number
+          touchpoint_type?: string
+          updated_at?: string
+          value_message?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journey_touchpoints_stage_id_fkey"
+            columns: ["stage_id"]
+            isOneToOne: false
+            referencedRelation: "journey_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journeys: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          is_template: boolean | null
+          journey_type: Database["public"]["Enums"]["journey_type"]
+          name: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_template?: boolean | null
+          journey_type: Database["public"]["Enums"]["journey_type"]
+          name: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_template?: boolean | null
+          journey_type?: Database["public"]["Enums"]["journey_type"]
+          name?: string
+          owner_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      lead_activities: {
+        Row: {
+          activity_type: string
+          created_at: string
+          description: string | null
+          id: string
+          lead_id: string
+          outcome: string | null
+          subject: string | null
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          lead_id: string
+          outcome?: string | null
+          subject?: string | null
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          lead_id?: string
+          outcome?: string | null
+          subject?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          campaign_id: string | null
+          company: string | null
+          converted_at: string | null
+          converted_to_opportunity_id: string | null
+          created_at: string
+          email: string | null
+          first_name: string
+          id: string
+          interests: string[] | null
+          last_name: string
+          notes: string | null
+          owner_id: string
+          pain_points: string[] | null
+          phone: string | null
+          score: number | null
+          source: string | null
+          status: Database["public"]["Enums"]["lead_status"]
+          title: string | null
+          updated_at: string
+          value_proposition_fit: string | null
+        }
+        Insert: {
+          campaign_id?: string | null
+          company?: string | null
+          converted_at?: string | null
+          converted_to_opportunity_id?: string | null
+          created_at?: string
+          email?: string | null
+          first_name: string
+          id?: string
+          interests?: string[] | null
+          last_name: string
+          notes?: string | null
+          owner_id: string
+          pain_points?: string[] | null
+          phone?: string | null
+          score?: number | null
+          source?: string | null
+          status?: Database["public"]["Enums"]["lead_status"]
+          title?: string | null
+          updated_at?: string
+          value_proposition_fit?: string | null
+        }
+        Update: {
+          campaign_id?: string | null
+          company?: string | null
+          converted_at?: string | null
+          converted_to_opportunity_id?: string | null
+          created_at?: string
+          email?: string | null
+          first_name?: string
+          id?: string
+          interests?: string[] | null
+          last_name?: string
+          notes?: string | null
+          owner_id?: string
+          pain_points?: string[] | null
+          phone?: string | null
+          score?: number | null
+          source?: string | null
+          status?: Database["public"]["Enums"]["lead_status"]
+          title?: string | null
+          updated_at?: string
+          value_proposition_fit?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_converted_to_opportunity_id_fkey"
+            columns: ["converted_to_opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      opportunities: {
+        Row: {
+          actual_close_date: string | null
+          amount: number | null
+          campaign_id: string | null
+          company: string
+          competitive_situation: string | null
+          contact_email: string | null
+          contact_name: string | null
+          created_at: string
+          deal_id: string | null
+          expected_close_date: string | null
+          id: string
+          lead_id: string | null
+          lost_reason: string | null
+          name: string
+          owner_id: string
+          primary_value_message: string | null
+          probability: number | null
+          stage: Database["public"]["Enums"]["opportunity_stage"]
+          updated_at: string
+        }
+        Insert: {
+          actual_close_date?: string | null
+          amount?: number | null
+          campaign_id?: string | null
+          company: string
+          competitive_situation?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          deal_id?: string | null
+          expected_close_date?: string | null
+          id?: string
+          lead_id?: string | null
+          lost_reason?: string | null
+          name: string
+          owner_id: string
+          primary_value_message?: string | null
+          probability?: number | null
+          stage?: Database["public"]["Enums"]["opportunity_stage"]
+          updated_at?: string
+        }
+        Update: {
+          actual_close_date?: string | null
+          amount?: number | null
+          campaign_id?: string | null
+          company?: string
+          competitive_situation?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          deal_id?: string | null
+          expected_close_date?: string | null
+          id?: string
+          lead_id?: string | null
+          lost_reason?: string | null
+          name?: string
+          owner_id?: string
+          primary_value_message?: string | null
+          probability?: number | null
+          stage?: Database["public"]["Enums"]["opportunity_stage"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunities_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunities_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -351,6 +811,51 @@ export type Database = {
         }
         Relationships: []
       }
+      value_messages: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          message: string
+          owner_id: string
+          target_industry: string | null
+          target_persona: string | null
+          title: string
+          updated_at: string
+          usage_count: number | null
+          win_rate: number | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          message: string
+          owner_id: string
+          target_industry?: string | null
+          target_persona?: string | null
+          title: string
+          updated_at?: string
+          usage_count?: number | null
+          win_rate?: number | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          message?: string
+          owner_id?: string
+          target_industry?: string | null
+          target_persona?: string | null
+          title?: string
+          updated_at?: string
+          usage_count?: number | null
+          win_rate?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -385,6 +890,20 @@ export type Database = {
         | "pending_approval"
         | "approved"
         | "rejected"
+        | "closed_won"
+        | "closed_lost"
+      journey_type: "customer" | "seller" | "partner" | "deal"
+      lead_status:
+        | "new"
+        | "contacted"
+        | "qualified"
+        | "unqualified"
+        | "converted"
+      opportunity_stage:
+        | "discovery"
+        | "qualification"
+        | "proposal"
+        | "negotiation"
         | "closed_won"
         | "closed_lost"
       scoring_category: "financial" | "strategic" | "risk" | "customer"
@@ -524,6 +1043,22 @@ export const Constants = {
         "pending_approval",
         "approved",
         "rejected",
+        "closed_won",
+        "closed_lost",
+      ],
+      journey_type: ["customer", "seller", "partner", "deal"],
+      lead_status: [
+        "new",
+        "contacted",
+        "qualified",
+        "unqualified",
+        "converted",
+      ],
+      opportunity_stage: [
+        "discovery",
+        "qualification",
+        "proposal",
+        "negotiation",
         "closed_won",
         "closed_lost",
       ],
