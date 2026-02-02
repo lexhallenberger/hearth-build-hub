@@ -636,6 +636,73 @@ export type Database = {
           },
         ]
       }
+      journey_analysis_results: {
+        Row: {
+          analysis_type: string
+          analyzed_by: string | null
+          created_at: string
+          estimated_impact: number | null
+          findings: Json
+          friction_points: Json
+          id: string
+          journey_id: string | null
+          overall_score: number | null
+          recommendations: Json
+          stage_id: string | null
+          touchpoint_id: string | null
+        }
+        Insert: {
+          analysis_type: string
+          analyzed_by?: string | null
+          created_at?: string
+          estimated_impact?: number | null
+          findings?: Json
+          friction_points?: Json
+          id?: string
+          journey_id?: string | null
+          overall_score?: number | null
+          recommendations?: Json
+          stage_id?: string | null
+          touchpoint_id?: string | null
+        }
+        Update: {
+          analysis_type?: string
+          analyzed_by?: string | null
+          created_at?: string
+          estimated_impact?: number | null
+          findings?: Json
+          friction_points?: Json
+          id?: string
+          journey_id?: string | null
+          overall_score?: number | null
+          recommendations?: Json
+          stage_id?: string | null
+          touchpoint_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journey_analysis_results_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journeys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journey_analysis_results_stage_id_fkey"
+            columns: ["stage_id"]
+            isOneToOne: false
+            referencedRelation: "journey_stages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journey_analysis_results_touchpoint_id_fkey"
+            columns: ["touchpoint_id"]
+            isOneToOne: false
+            referencedRelation: "journey_touchpoints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       journey_metrics: {
         Row: {
           avg_time_in_stage_days: number | null
@@ -754,19 +821,30 @@ export type Database = {
       }
       journey_touchpoints: {
         Row: {
+          benchmark_conversion_rate: number | null
+          benchmark_kpis: string[] | null
+          benchmark_owner_role: string | null
+          benchmark_systems: string[] | null
+          benchmark_value_message: string | null
+          benchmark_velocity_days: number | null
           channel: string | null
           created_at: string
+          current_conversion_rate: number | null
+          current_velocity_days: number | null
           description: string | null
           emotion: number | null
           id: string
+          improvement_notes: string | null
           is_moment_of_truth: boolean | null
           kpis: string[] | null
           lane: string | null
+          last_analyzed_at: string | null
           name: string
           owner_role: string | null
           pain_point_level: number | null
           position_x: number | null
           position_y: number | null
+          revenue_impact_estimate: number | null
           stage_id: string
           systems: string[] | null
           touchpoint_order: number
@@ -775,19 +853,30 @@ export type Database = {
           value_message: string | null
         }
         Insert: {
+          benchmark_conversion_rate?: number | null
+          benchmark_kpis?: string[] | null
+          benchmark_owner_role?: string | null
+          benchmark_systems?: string[] | null
+          benchmark_value_message?: string | null
+          benchmark_velocity_days?: number | null
           channel?: string | null
           created_at?: string
+          current_conversion_rate?: number | null
+          current_velocity_days?: number | null
           description?: string | null
           emotion?: number | null
           id?: string
+          improvement_notes?: string | null
           is_moment_of_truth?: boolean | null
           kpis?: string[] | null
           lane?: string | null
+          last_analyzed_at?: string | null
           name: string
           owner_role?: string | null
           pain_point_level?: number | null
           position_x?: number | null
           position_y?: number | null
+          revenue_impact_estimate?: number | null
           stage_id: string
           systems?: string[] | null
           touchpoint_order?: number
@@ -796,19 +885,30 @@ export type Database = {
           value_message?: string | null
         }
         Update: {
+          benchmark_conversion_rate?: number | null
+          benchmark_kpis?: string[] | null
+          benchmark_owner_role?: string | null
+          benchmark_systems?: string[] | null
+          benchmark_value_message?: string | null
+          benchmark_velocity_days?: number | null
           channel?: string | null
           created_at?: string
+          current_conversion_rate?: number | null
+          current_velocity_days?: number | null
           description?: string | null
           emotion?: number | null
           id?: string
+          improvement_notes?: string | null
           is_moment_of_truth?: boolean | null
           kpis?: string[] | null
           lane?: string | null
+          last_analyzed_at?: string | null
           name?: string
           owner_role?: string | null
           pain_point_level?: number | null
           position_x?: number | null
           position_y?: number | null
+          revenue_impact_estimate?: number | null
           stage_id?: string
           systems?: string[] | null
           touchpoint_order?: number

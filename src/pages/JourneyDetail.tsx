@@ -13,7 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Loader2, Settings, Share2, MoreHorizontal, LayoutList, Map } from 'lucide-react';
+import { ArrowLeft, Loader2, Settings, Share2, MoreHorizontal, Brain, Map, LayoutList } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +24,7 @@ import {
 import { JourneyStage, JourneyTouchpoint, JOURNEY_TYPE_LABELS, JOURNEY_TYPE_COLORS } from '@/types/journeys';
 import { JourneyCanvas } from '@/components/journeys/JourneyCanvas';
 import { JourneyBlueprintView } from '@/components/journeys/blueprint';
+import { JourneyIntelligenceDashboard } from '@/components/journeys/intelligence';
 import { StageFormDialog } from '@/components/journeys/dialogs/StageFormDialog';
 import { TouchpointFormDialog } from '@/components/journeys/dialogs/TouchpointFormDialog';
 
@@ -218,18 +219,29 @@ export default function JourneyDetail() {
         </div>
       </div>
 
-      {/* Tabbed View: Blueprint (default) vs Canvas */}
-      <Tabs defaultValue="blueprint" className="w-full">
+      {/* Tabbed View: Intelligence (default) vs Blueprint vs Canvas */}
+      <Tabs defaultValue="intelligence" className="w-full">
         <TabsList className="mb-4">
+          <TabsTrigger value="intelligence" className="gap-2">
+            <Brain className="h-4 w-4" />
+            Intelligence
+          </TabsTrigger>
           <TabsTrigger value="blueprint" className="gap-2">
             <LayoutList className="h-4 w-4" />
-            Blueprint View
+            Blueprint
           </TabsTrigger>
           <TabsTrigger value="canvas" className="gap-2">
             <Map className="h-4 w-4" />
-            Canvas View
+            Canvas
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="intelligence" className="mt-0">
+          <JourneyIntelligenceDashboard 
+            journey={journey} 
+            onEditTouchpoint={handleBlueprintEditTouchpoint}
+          />
+        </TabsContent>
 
         <TabsContent value="blueprint" className="mt-0">
           <JourneyBlueprintView 
