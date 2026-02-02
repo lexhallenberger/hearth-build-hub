@@ -13,19 +13,10 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-accent" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
+  // Auth check disabled for demo/feedback sharing
+  // const { user, loading } = useAuth();
+  // if (loading) { return loading spinner }
+  // if (!user) { return <Navigate to="/auth" replace />; }
 
   return (
     <SidebarProvider>
