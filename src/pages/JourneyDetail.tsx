@@ -12,7 +12,8 @@ import {
 } from '@/hooks/useJourneys';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Loader2, Settings, Share2, MoreHorizontal } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArrowLeft, Loader2, Settings, Share2, MoreHorizontal, LayoutList, Map } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,6 +23,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { JourneyStage, JourneyTouchpoint, JOURNEY_TYPE_LABELS, JOURNEY_TYPE_COLORS } from '@/types/journeys';
 import { JourneyCanvas } from '@/components/journeys/JourneyCanvas';
+import { JourneyBlueprintView } from '@/components/journeys/blueprint';
 import { StageFormDialog } from '@/components/journeys/dialogs/StageFormDialog';
 import { TouchpointFormDialog } from '@/components/journeys/dialogs/TouchpointFormDialog';
 
@@ -148,6 +150,14 @@ export default function JourneyDetail() {
     }
   };
 
+  // Handler for Blueprint View edit
+  const handleBlueprintEditTouchpoint = (touchpoint: JourneyTouchpoint, stageId: string) => {
+    setSelectedStageId(stageId);
+    setEditingTouchpoint(touchpoint);
+    setDefaultLane((touchpoint as any).lane || 'front');
+    setIsTouchpointDialogOpen(true);
+  };
+
   return (
     <div className="space-y-4 animate-fade-in">
       {/* Premium Header */}
@@ -208,16 +218,38 @@ export default function JourneyDetail() {
         </div>
       </div>
 
-      {/* Premium Canvas */}
-      <JourneyCanvas
-        journey={journey}
-        onAddStage={handleAddStage}
-        onEditStage={handleEditStage}
-        onDeleteStage={handleDeleteStage}
-        onAddTouchpoint={handleAddTouchpoint}
-        onEditTouchpoint={handleEditTouchpoint}
-        onDeleteTouchpoint={handleDeleteTouchpoint}
-      />
+      {/* Tabbed View: Blueprint (default) vs Canvas */}
+      <Tabs defaultValue="blueprint" className="w-full">
+        <TabsList className="mb-4">
+          <TabsTrigger value="blueprint" className="gap-2">
+            <LayoutList className="h-4 w-4" />
+            Blueprint View
+          </TabsTrigger>
+          <TabsTrigger value="canvas" className="gap-2">
+            <Map className="h-4 w-4" />
+            Canvas View
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="blueprint" className="mt-0">
+          <JourneyBlueprintView 
+            journey={journey} 
+            onEditTouchpoint={handleBlueprintEditTouchpoint}
+          />
+        </TabsContent>
+
+        <TabsContent value="canvas" className="mt-0">
+          <JourneyCanvas
+            journey={journey}
+            onAddStage={handleAddStage}
+            onEditStage={handleEditStage}
+            onDeleteStage={handleDeleteStage}
+            onAddTouchpoint={handleAddTouchpoint}
+            onEditTouchpoint={handleEditTouchpoint}
+            onDeleteTouchpoint={handleDeleteTouchpoint}
+          />
+        </TabsContent>
+      </Tabs>
 
       {/* Stage Dialog */}
       <StageFormDialog
