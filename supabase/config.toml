@@ -2,3 +2,6 @@ project_id = "innahexsadlzkqyxgwnz"
 
 [functions.ai-deal-coach]
 verify_jwt = false
+
+[functions.ai-journey-analyst]
+verify_jwt = false
